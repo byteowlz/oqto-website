@@ -100,29 +100,24 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ── Theme Toggle ── */
+/* ── Theme Toggle (inline in nav, next to GitHub) ── */
 .theme-toggle {
-  position: fixed;
-  top: 1.25rem;
-  right: 1.25rem;
-  z-index: 100;
   width: 2.25rem;
   height: 2.25rem;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 0;
-  background: var(--bg-card);
+  background: none;
   color: var(--fg-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
+  position: relative;
 }
 
 .theme-toggle:hover {
-  border-color: var(--accent);
   color: var(--accent);
-  background: var(--accent-subtle);
 }
 
 .theme-toggle__sun,
@@ -234,10 +229,17 @@ a:hover {
   text-decoration: none;
 }
 
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .nav__github {
   color: var(--fg-muted);
   display: flex;
   align-items: center;
+  padding: 0.375rem;
   transition: color var(--transition-fast);
 }
 
@@ -271,9 +273,25 @@ a:hover {
 
 .hero__logo {
   width: 100%;
-  max-width: 320px;
+  max-width: 180px;
   height: auto;
   margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .hero__logo {
+    max-width: 220px;
+  }
+}
+
+/* Center hero content on mobile */
+@media (max-width: 1023px) {
+  .hero__content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 /* Theme-aware hero logo */
@@ -871,6 +889,116 @@ a:hover {
 .footer__copyright {
   color: rgba(242, 245, 243, 0.35);
   font-size: 0.75rem;
+}
+
+/* ── Mermaid Diagram ── */
+.architecture-mermaid {
+  margin-bottom: 2.5rem;
+}
+
+.mermaid-container {
+  display: flex;
+  justify-content: center;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.mermaid-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent any horizontal overflow on mobile */
+html,
+body {
+  overflow-x: hidden;
+}
+
+.section__container,
+.nav__container,
+.hero__container,
+.footer__container {
+  overflow: hidden;
+}
+
+/* ── Security Grid ── */
+.security-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .security-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .security-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Code Blocks ── */
+.code-block {
+  margin-top: 0.75rem;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.dark .code-block {
+  background: #0f1412;
+  border-color: #2d312f;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 0.75rem;
+}
+
+.code-block code {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.dark .code-block code {
+  color: #8a938e;
+}
+
+/* ── Tool Links ── */
+.tool--link {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--fg-muted);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.tool--link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ── Architecture Details (horizontal below diagram) ── */
+.architecture__details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .architecture__details {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* ── Scrollbar (matches Octo app) ── */

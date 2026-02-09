@@ -16,7 +16,6 @@ const MIME_TYPES: Record<string, string> = {
   ".html": "text/html",
   ".js": "application/javascript",
   ".mjs": "application/javascript",
-  ".ts": "application/typescript",
   ".css": "text/css",
   ".json": "application/json",
   ".png": "image/png",
@@ -33,6 +32,19 @@ const MIME_TYPES: Record<string, string> = {
 function getMimeType(path: string): string {
   const ext = path.slice(path.lastIndexOf("."));
   return MIME_TYPES[ext] || "application/octet-stream";
+}
+
+/**
+ * Transpile .ts files to JS on-the-fly for dev serving.
+ */
+async function transpileTs(filePath: string): Promise<Response> {
+  const file = Bun.file(filePath);
+  const source = await file.text();
+  const transpiler = new Bun.Transpiler({ loader: "ts" });
+  const js = transpiler.transformSync(source);
+  return new Response(js, {
+    headers: { "Content-Type": "application/javascript" },
+  });
 }
 
 Bun.serve({
@@ -67,6 +79,11 @@ Bun.serve({
         }
 
         return new Response("Not Found", { status: 404 });
+      }
+
+      // Transpile TypeScript on the fly for dev
+      if (pathname.endsWith(".ts")) {
+        return transpileTs(filePath);
       }
 
       return new Response(file, {

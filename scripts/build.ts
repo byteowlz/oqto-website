@@ -43,4 +43,14 @@ for (const file of tsFiles) {
   }
 }
 
+// Rewrite index.html to reference built .js instead of .ts
+const indexPath = join(DIST_DIR, "index.html");
+if (existsSync(indexPath)) {
+  const { readFileSync, writeFileSync } = await import("node:fs");
+  const html = readFileSync(indexPath, "utf-8");
+  const updatedHtml = html.replace('/scripts/main.ts"', '/scripts/main.js"');
+  writeFileSync(indexPath, updatedHtml);
+  console.log("  ✓ Rewrote index.html script references");
+}
+
 console.log("\nBuild complete! Output in ./dist");

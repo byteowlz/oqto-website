@@ -95,7 +95,11 @@
   },
   "files": {
     "include": ["src/**/*", "scripts/**/*", "public/**/*"],
-    "ignore": ["dist/**/*", "node_modules/**/*"]
+    "ignore": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "public/scripts/beautiful-mermaid.js"
+    ]
   },
   "formatter": {
     "enabled": true,
