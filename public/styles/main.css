@@ -173,35 +173,30 @@ a:hover {
 .nav__logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--fg);
-  font-weight: 600;
-  font-size: 1rem;
   text-decoration: none;
-  letter-spacing: 0.02em;
 }
 
 .nav__logo:hover {
-  color: var(--accent);
   text-decoration: none;
+  opacity: 0.8;
 }
 
-.nav__logo-icon {
-  width: 1.75rem;
-  height: 1.75rem;
+.nav__logo-text {
+  height: 1.5rem;
+  width: auto;
 }
 
-/* Theme-aware logo: show black icon in light, white in dark */
-.nav__logo-icon--light {
+/* Theme-aware nav logo */
+.nav__logo-text--light {
   display: block;
 }
-.nav__logo-icon--dark {
+.nav__logo-text--dark {
   display: none;
 }
-.dark .nav__logo-icon--light {
+.dark .nav__logo-text--light {
   display: none;
 }
-.dark .nav__logo-icon--dark {
+.dark .nav__logo-text--dark {
   display: block;
 }
 
