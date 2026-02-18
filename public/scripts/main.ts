@@ -1,7 +1,7 @@
 /**
- * Theme management -- uses .dark class on <html> (matches Octo app)
+ * Theme management -- uses .dark class on <html> (matches Oqto app)
  */
-const THEME_KEY = "octo-theme";
+const THEME_KEY = "oqto-theme";
 type Theme = "light" | "dark";
 
 function getStoredTheme(): Theme | null {
@@ -51,91 +51,13 @@ function setTheme(theme: Theme): void {
   } catch {
     // localStorage unavailable
   }
-  // Re-render mermaid diagram for new theme
-  renderArchDiagram();
 }
 
 function toggleTheme(): void {
   setTheme(isDarkMode() ? "light" : "dark");
 }
 
-/**
- * Architecture diagram via beautiful-mermaid
- */
-const ARCH_MERMAID = `graph TD
-  subgraph Browser
-    FE["Frontend<br/><i>React + WS</i>"]
-  end
 
-  subgraph "Backend (octo)"
-    API["API Server"]
-    CP["Canonical Protocol"]
-    AUTH["Auth / JWT"]
-  end
-
-  subgraph "Services (optional)"
-    HSTRY["hstry<br/><i>chat history</i>"]
-    MMRY["mmry<br/><i>memory / search</i>"]
-    TRX["trx<br/><i>task tracking</i>"]
-    EAVS["eavs<br/><i>LLM proxy</i>"]
-  end
-
-  subgraph "Runtime"
-    RUNNER["octo-runner<br/><i>process daemon</i>"]
-    SANDBOX["octo-sandbox<br/><i>bwrap / seatbelt</i>"]
-    CONTAINER["Container Runtime<br/><i>Docker / Podman</i>"]
-  end
-
-  subgraph "Agent Harnesses"
-    PI["Pi Agent"]
-  end
-
-  FE -- "WS: mux" --> API
-  API --> CP
-  API --> AUTH
-  CP --> RUNNER
-  CP --> CONTAINER
-  RUNNER --> SANDBOX
-  SANDBOX --> PI
-  CONTAINER --> PI
-  API -.-> HSTRY
-  API -.-> MMRY
-  API -.-> TRX
-  API -.-> EAVS`;
-
-declare const beautifulMermaid: {
-  renderMermaid: (
-    diagram: string,
-    options?: { bg?: string; fg?: string; accent?: string },
-  ) => Promise<string>;
-};
-
-async function renderArchDiagram(): Promise<void> {
-  const container = document.getElementById("arch-diagram");
-  if (!container) {
-    return;
-  }
-
-  // Check if beautiful-mermaid loaded
-  if (typeof beautifulMermaid === "undefined") {
-    return;
-  }
-
-  const dark = isDarkMode();
-  const opts = dark
-    ? { bg: "#222624", fg: "#b2b9b5", accent: "#3ba77c" }
-    : { bg: "#f2f5f3", fg: "#222624", accent: "#3ba77c" };
-
-  try {
-    const svg = await beautifulMermaid.renderMermaid(ARCH_MERMAID, opts);
-    container.innerHTML = svg;
-  } catch {
-    // Fallback: show text description
-    container.innerHTML = `<pre style="color: var(--fg-muted); font-size: 0.75rem; text-align: left;">Frontend --[WS: mux]--&gt; Backend (octo) --[Unix socket]--&gt; octo-runner --&gt; Agent
-                                   |
-                            hstry / mmry / trx / eavs (optional)</pre>`;
-  }
-}
 
 /**
  * Copy to clipboard
@@ -168,9 +90,6 @@ function init(): void {
     themeToggle.addEventListener("click", toggleTheme);
   }
 
-  // Render architecture diagram
-  renderArchDiagram();
-
   // Copy install command
   const copyButton = document.querySelector(".hero__copy");
   const commandElement = document.querySelector(".hero__command");
@@ -199,7 +118,6 @@ function init(): void {
     .addEventListener("change", (e) => {
       if (!getStoredTheme()) {
         applyTheme(e.matches ? "dark" : "light");
-        renderArchDiagram();
       }
     });
 

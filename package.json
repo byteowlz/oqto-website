@@ -1,7 +1,7 @@
 {
-  "name": "octo-website",
+  "name": "oqto-website",
   "version": "1.0.0",
-  "description": "Octo documentation website - Self-hosted AI agent platform",
+  "description": "Oqto documentation website - Self-hosted AI agent platform",
   "type": "module",
   "scripts": {
     "dev": "bun run --watch src/server.ts",

@@ -6,7 +6,7 @@ import { build } from "bun";
 const DIST_DIR = "./dist";
 const PUBLIC_DIR = "./public";
 
-console.log("Building Octo website...");
+console.log("Building Oqto website...");
 
 // Create dist directory
 if (!existsSync(DIST_DIR)) {
