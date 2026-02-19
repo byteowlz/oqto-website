@@ -608,7 +608,7 @@ a:hover {
 .note {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: var(--fg-muted);
+  color: var(--fg);
   line-height: 1.6;
   padding: 0.85rem 1rem;
   background: var(--accent-subtle);

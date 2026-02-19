@@ -14,7 +14,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="oqto setup configurator - generate your oqto.setup.toml">
-  <title>oqto -- setup configurator</title>
+  <title>oqto - setup configurator</title>
   <link rel="icon" type="image/svg+xml" href="/assets/oqto-icon-white.svg">
   <link rel="stylesheet" href="/styles/main.css">
   <style>
@@ -560,10 +560,12 @@
       <p class="setup__subtitle">
         Build your <code>oqto.setup.toml</code> configuration file. This drives the
         non-interactive installer so you can deploy oqto on a fresh server without
-        answering prompts. Everything runs in your browser -- nothing is sent anywhere.
+        answering prompts. This config runs offline in your browser, nothing is getting uploaded.
       </p>
       <div class="note" style="margin-top:1rem">
-        Recommended: Ubuntu 24.04. Other distributions are experimental but on the roadmap.
+        The setup script testing is currently focused on ubuntu 24.04, but oqto can run on any linux distro in principle.
+        The individual components will even run on MacOS but the focus is on Linux for now. Ensure your ssh key is installed
+        on the server before running hardening steps (password auth may be disabled).
       </div>
     </div>
 
@@ -594,7 +596,7 @@
         <label class="field__label" for="backend-mode">Backend Mode</label>
         <select class="field__select" id="backend-mode">
           <option value="local" selected>Local (native processes)</option>
-          <option value="container" disabled>Container (Docker/Podman) -- coming soon</option>
+          <option value="container" disabled>Container (Docker/Podman or similar) [coming soon]</option>
         </select>
         <p class="field__hint">
           <strong>Local</strong> spawns agent processes directly on the host. Lower overhead,
@@ -677,7 +679,7 @@
       <p class="setup__section-desc">
         The first user account created during setup. This account has full admin
         privileges: managing users, viewing system status, and configuring providers.
-        The password is never stored in this file -- it will be prompted securely during
+        The password is never stored in this file, it will be prompted securely during
         installation.
       </p>
       <div class="field">
@@ -800,7 +802,7 @@
       <h2 class="setup__section-title">Agent Tools</h2>
       <p class="setup__section-desc">
         CLI tools available to AI agents in their workspace. These extend what agents can
-        do beyond code editing -- searching the web, managing memory, generating documents, etc.
+        do beyond code editing, searching the web, managing memory, generating documents, etc.
         All tools are installed to <code>/usr/local/bin</code> and available to all users.
       </p>
 
@@ -823,7 +825,7 @@
           <span class="toggle__text">
             <span class="toggle__label">agntz</span>
             <span class="toggle__desc">
-              Agent toolkit -- wraps memory, issues, file reservations, and inter-agent
+              Agent toolkit: wraps memory, issues, file reservations, and inter-agent
               messaging into a single CLI. Required for most agent workflows.
             </span>
           </span>
@@ -835,7 +837,7 @@
             <span class="toggle__label">mmry (required)</span>
             <span class="toggle__desc">
               Semantic memory storage and search. Agents use this to persist insights
-              across sessions -- architecture decisions, API patterns, debugging notes.
+              across sessions, architecture decisions, API patterns, debugging notes.
               Uses local embeddings (no external API calls for search).
             </span>
           </span>
@@ -1013,7 +1015,7 @@
             <span class="toggle__label">Automatic security updates</span>
             <span class="toggle__desc">
               Enables unattended-upgrades for security patches. Only security updates
-              are applied automatically -- no major version changes. Reduces the
+              are applied automatically, no major version changes. Reduces the
               window of vulnerability for known CVEs.
             </span>
           </span>
@@ -1069,7 +1071,7 @@
       </div>
 
       <div style="margin-top:1rem">
-        <label class="field__label" style="margin-bottom:0.35rem">Shareable link (config encoded in URL -- nothing sent to server)</label>
+        <label class="field__label" style="margin-bottom:0.35rem">Shareable link (config encoded in URL, nothing sent to server)</label>
         <div class="share-link">
           <input class="share-link__input" id="share-link" type="text" readonly>
           <button class="btn btn--small" id="share-link-copy">copy</button>
@@ -1173,7 +1175,7 @@
         html += '<label class="field__label">Base URL</label>';
         html += '<input class="field__input cp-base-url" type="text" value="' + preset.base_url + '" placeholder="http://localhost:8080/v1">';
         if (preset.no_key) {
-          html += '<p class="field__hint">Local inference server -- no API key needed.</p>';
+          html += '<p class="field__hint">Local inference server, no API key needed.</p>';
         } else {
           html += '<p class="field__hint">The API endpoint. For local servers, use http://localhost:PORT/v1</p>';
         }
@@ -1304,7 +1306,7 @@
 
         // [admin]
         L.push('[admin]');
-        L.push('# Password is prompted during setup -- never stored in this file');
+        L.push('# Password is prompted during setup, never stored in this file');
         var adminUser = $('admin-username').value.trim() || 'admin';
         var adminEmail = $('admin-email').value.trim();
         L.push('username = ' + tomlStr(adminUser));

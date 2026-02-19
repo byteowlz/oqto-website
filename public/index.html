@@ -85,15 +85,9 @@
           <a href="/prompt.html" class="hero__cta">agent prompt</a>
         </div>
         <div class="note">
-          DISCLAIMER: oqto is in early, active development. expect bugs and unfinished features. llm agents
-          are susceptible to prompt injection and data exfiltration (see <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/" target="_blank" rel="noopener">the lethal trifecta</a>). use sandboxing and scoped
-          permissions, and avoid giving agents unrestricted access to sensitive data.
-          <br><br>
-          Setup script testing is focused on ubuntu 24.04, but oqto can run on any linux distro in principle.
-          Ensure your ssh key is installed on the server before running hardening steps (password auth may be disabled).
-          <br><br>
-          This site does not include hidden html comments or obfuscated prompts. Please always read any text
-          you paste into an agent tool.
+          DISCLAIMER: oqto is in early, active development. expect bugs and unfinished features. llm-based agents
+          are still susceptible to prompt injection and data exfiltration (see <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/" target="_blank" rel="noopener">the lethal trifecta</a>). use sandboxing and scoped
+          permissions and avoid giving agents unrestricted access to sensitive data. oqto is built around the concept of scoped workdirs/agents. an agent sorting your emails probably does not need access to your home assistant and vice versa. general agents are very convenient but deliberate friction is still the better approach for now.
         </div>
       </div>
     </div>
