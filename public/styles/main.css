@@ -337,6 +337,8 @@ a:hover {
   color: var(--accent);
   background: none;
   border: none;
+  white-space: pre;
+  line-height: 1.5;
 }
 
 .hero__copy {
