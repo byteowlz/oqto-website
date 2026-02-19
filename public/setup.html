@@ -19,9 +19,10 @@
   <link rel="stylesheet" href="/styles/main.css">
   <style>
     .setup {
-      max-width: 780px;
+      max-width: 920px;
       margin: 0 auto;
       padding: calc(2rem + 3.5rem) 1.5rem 4rem;
+      font-size: 16px;
     }
 
     .setup__header {
@@ -430,6 +431,37 @@
       color: var(--accent);
     }
 
+    .deploy-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .deploy-tab {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--fg-muted);
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .deploy-tab.is-active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .deploy-panel {
+      display: none;
+    }
+
+    .deploy-panel.is-active {
+      display: block;
+    }
+
     .share-link {
       display: flex;
       gap: 0.5rem;
@@ -487,6 +519,7 @@
         <img src="/assets/oqto-text-white.svg" alt="oqto" class="nav__logo-text nav__logo-text--dark">
       </a>
       <div class="nav__actions">
+        <a href="/setup.html" class="nav__link" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--fg-muted);text-decoration:none;transition:color 120ms ease" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--fg-muted)'">setup</a>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
           <span class="theme-toggle__sun">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -503,6 +536,11 @@
             </svg>
           </span>
         </button>
+        <a href="https://github.com/byteowlz/oqto" class="nav__github" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
       </div>
     </div>
   </nav>
@@ -515,6 +553,9 @@
         non-interactive installer so you can deploy oqto on a fresh server without
         answering prompts. Everything runs in your browser -- nothing is sent anywhere.
       </p>
+      <div class="note" style="margin-top:1rem">
+        Recommended: Ubuntu 24.04. Other distributions are experimental but on the roadmap.
+      </div>
     </div>
 
     <!-- ── Deployment ── -->
@@ -760,8 +801,8 @@
         <span class="toggle__text">
           <span class="toggle__label">Install all tools (recommended)</span>
           <span class="toggle__desc">
-            Installs the full toolkit. Individual tools can be uninstalled later.
-            Total disk usage is ~200MB.
+            Installs the full toolkit. Required tools (mmry, hstry, trx) are always
+            installed even if you opt out of optional tools. Total disk usage is ~200MB.
           </span>
         </span>
       </label>
@@ -779,10 +820,10 @@
           </span>
         </label>
         <label class="toggle">
-          <input type="checkbox" class="tool-toggle" data-tool="mmry" checked>
+          <input type="checkbox" class="tool-toggle" data-tool="mmry" checked disabled>
           <span class="toggle__switch"></span>
           <span class="toggle__text">
-            <span class="toggle__label">mmry</span>
+            <span class="toggle__label">mmry (required)</span>
             <span class="toggle__desc">
               Semantic memory storage and search. Agents use this to persist insights
               across sessions -- architecture decisions, API patterns, debugging notes.
@@ -791,10 +832,10 @@
           </span>
         </label>
         <label class="toggle">
-          <input type="checkbox" class="tool-toggle" data-tool="hstry" checked>
+          <input type="checkbox" class="tool-toggle" data-tool="hstry" checked disabled>
           <span class="toggle__switch"></span>
           <span class="toggle__text">
-            <span class="toggle__label">hstry</span>
+            <span class="toggle__label">hstry (required)</span>
             <span class="toggle__desc">
               Chat history daemon (gRPC API, SQLite-backed). Stores all conversation
               messages in a structured, searchable format. Required for the chat UI.
@@ -858,10 +899,10 @@
           </span>
         </label>
         <label class="toggle">
-          <input type="checkbox" class="tool-toggle" data-tool="trx">
+          <input type="checkbox" class="tool-toggle" data-tool="trx" checked disabled>
           <span class="toggle__switch"></span>
           <span class="toggle__text">
-            <span class="toggle__label">trx</span>
+            <span class="toggle__label">trx (required)</span>
             <span class="toggle__desc">
               Issue and task tracking that lives inside the repo (.trx directory).
               Agents use this to plan work, track progress, and coordinate across sessions.
@@ -992,9 +1033,23 @@
         API keys will be prompted interactively.
       </p>
 
-      <div class="deploy-cmd">
-        <pre class="deploy-cmd__pre" id="deploy-cmd"></pre>
-        <button class="deploy-cmd__copy" id="deploy-cmd-copy">copy</button>
+      <div class="deploy-tabs">
+        <button class="deploy-tab is-active" data-tab="env">env vars (transparent)</button>
+        <button class="deploy-tab" data-tab="toml">toml (full config)</button>
+      </div>
+
+      <div class="deploy-panel is-active" id="deploy-panel-env">
+        <div class="deploy-cmd">
+          <pre class="deploy-cmd__pre" id="deploy-cmd-env"></pre>
+          <button class="deploy-cmd__copy" id="deploy-cmd-env-copy">copy</button>
+        </div>
+      </div>
+
+      <div class="deploy-panel" id="deploy-panel-toml">
+        <div class="deploy-cmd">
+          <pre class="deploy-cmd__pre" id="deploy-cmd-toml"></pre>
+          <button class="deploy-cmd__copy" id="deploy-cmd-toml-copy">copy</button>
+        </div>
       </div>
 
       <div class="deploy-or">-- or --</div>
@@ -1286,6 +1341,9 @@
           document.querySelectorAll('.tool-toggle').forEach(function(t) {
             if (t.checked) tools.push(t.dataset.tool);
           });
+          ['mmry', 'hstry', 'trx'].forEach(function(req) {
+            if (tools.indexOf(req) === -1) tools.push(req);
+          });
           L.push('enabled = [' + tools.map(tomlStr).join(', ') + ']');
           var sxOn = document.querySelector('.tool-toggle[data-tool="sx"]');
           if (sxOn && sxOn.checked) {
@@ -1405,44 +1463,39 @@
         return "'" + s.replace(/'/g, "'\\''") + "'";
       }
 
-      function generateDeployCmd() {
+      function generateDeployCmdEnv(pretty) {
         var vars = generateEnvVars();
-        var lines = ['git clone https://github.com/byteowlz/oqto.git && cd oqto && \\'];
-
-        // Custom providers need a config file (env vars can't express nested TOML)
         var customProviders = getCustomProviders();
         if (customProviders.length > 0) {
-          // Fall back to TOML file for custom providers
-          lines.push('  cat > oqto.setup.toml << \'OQTO_EOF\'');
-          lines.push(generateToml().trimEnd());
-          lines.push('OQTO_EOF');
-          lines.push('  ./setup.sh --config oqto.setup.toml');
-        } else {
-          // Pure env vars -- fully readable
+          return '# env vars mode is not available when custom providers are defined\n' +
+            '# use the "toml" tab instead';
+        }
+        if (pretty) {
+          var lines = ['git clone https://github.com/byteowlz/oqto.git && cd oqto && \\\n'];
           if (vars.length > 0) {
-            vars.forEach(function(v, i) {
-              var prefix = (i === 0) ? '  ' : '  ';
-              var suffix = ' \\';
-              lines.push(prefix + v + suffix);
+            vars.forEach(function(v) {
+              lines.push('  ' + v + ' \\\n');
             });
           }
           lines.push('  ./setup.sh --non-interactive');
-        }
-        return lines.join('\n');
-      }
-
-      function generateDeployCmdRaw() {
-        var vars = generateEnvVars();
-        var customProviders = getCustomProviders();
-        if (customProviders.length > 0) {
-          // With custom providers, use heredoc inline
-          return "git clone https://github.com/byteowlz/oqto.git && cd oqto && " +
-            "cat > oqto.setup.toml << 'OQTO_EOF'\n" +
-            generateToml().trimEnd() + "\nOQTO_EOF\n" +
-            "./setup.sh --config oqto.setup.toml";
+          return lines.join('');
         }
         return 'git clone https://github.com/byteowlz/oqto.git && cd oqto && ' +
           vars.join(' ') + ' ./setup.sh --non-interactive';
+      }
+
+      function generateDeployCmdToml(pretty) {
+        var toml = generateToml().trimEnd();
+        if (pretty) {
+          return 'git clone https://github.com/byteowlz/oqto.git && cd oqto && \\\n' +
+            "  cat > oqto.setup.toml << 'OQTO_EOF'\n" +
+            toml + '\nOQTO_EOF\n' +
+            '  ./setup.sh --config oqto.setup.toml';
+        }
+        return "git clone https://github.com/byteowlz/oqto.git && cd oqto && " +
+          "cat > oqto.setup.toml << 'OQTO_EOF'\n" +
+          toml + "\nOQTO_EOF\n" +
+          "./setup.sh --config oqto.setup.toml";
       }
 
       function generateShareLink(toml) {
@@ -1452,9 +1505,21 @@
 
       function render() {
         var toml = generateToml();
+        var customProviders = getCustomProviders();
         $('output').textContent = toml;
-        $('deploy-cmd').textContent = generateDeployCmd();
+        $('deploy-cmd-env').textContent = generateDeployCmdEnv(true);
+        $('deploy-cmd-toml').textContent = generateDeployCmdToml(true);
         $('share-link').value = generateShareLink(toml);
+
+        // If custom providers exist, force the TOML tab
+        if (customProviders.length > 0) {
+          document.querySelectorAll('.deploy-tab').forEach(function(t) {
+            t.classList.toggle('is-active', t.dataset.tab === 'toml');
+          });
+          document.querySelectorAll('.deploy-panel').forEach(function(p) {
+            p.classList.toggle('is-active', p.id === 'deploy-panel-toml');
+          });
+        }
       }
 
       function updateWorkspaceHint() {
@@ -1498,6 +1563,19 @@
         el.addEventListener('input', function() { render(); });
       });
 
+      // Required tools: force checked + disabled
+      function enforceRequiredTools() {
+        ['mmry', 'hstry', 'trx'].forEach(function(tool) {
+          var t = document.querySelector('.tool-toggle[data-tool="' + tool + '"]');
+          if (t) {
+            t.checked = true;
+            t.disabled = true;
+          }
+        });
+      }
+
+      enforceRequiredTools();
+
       function copyWithFeedback(btn, text) {
         navigator.clipboard.writeText(text).then(function() {
           var orig = btn.textContent;
@@ -1521,12 +1599,29 @@
         copyWithFeedback(this, generateToml());
       });
 
-      $('deploy-cmd-copy').addEventListener('click', function() {
-        copyWithFeedback(this, generateDeployCmdRaw());
+      $('deploy-cmd-env-copy').addEventListener('click', function() {
+        copyWithFeedback(this, generateDeployCmdEnv(false));
+      });
+
+      $('deploy-cmd-toml-copy').addEventListener('click', function() {
+        copyWithFeedback(this, generateDeployCmdToml(false));
       });
 
       $('share-link-copy').addEventListener('click', function() {
         copyWithFeedback(this, $('share-link').value);
+      });
+
+      // Tabs
+      document.querySelectorAll('.deploy-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var target = tab.dataset.tab;
+          document.querySelectorAll('.deploy-tab').forEach(function(t) {
+            t.classList.toggle('is-active', t === tab);
+          });
+          document.querySelectorAll('.deploy-panel').forEach(function(p) {
+            p.classList.toggle('is-active', p.id === 'deploy-panel-' + target);
+          });
+        });
       });
 
       // ── Load config from URL fragment ──
