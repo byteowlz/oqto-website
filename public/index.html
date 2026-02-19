@@ -100,7 +100,24 @@
     <div class="section__container">
       <h2 class="section__title">architecture</h2>
       <div class="arch">
-        <img src="/assets/oqto-architecture-simple.svg" alt="oqto architecture" class="arch__img">
+        <div class="arch__split">
+          <img src="/assets/oqto-architecture-simple.svg" alt="oqto architecture" class="arch__img">
+          <div class="arch__text">
+            <h3>how it works</h3>
+            <p>
+              browser connects to oqto over a multiplexed websocket. oqto routes commands
+              to per-user runners, which spawn pi agents inside sandboxed workspaces.
+              hstry stores chat history, mmry provides semantic memory, trx tracks tasks,
+              and eavs proxies all llm provider requests.
+            </p>
+            <ul>
+              <li>frontend speaks a canonical protocol</li>
+              <li>oqto never spawns agents directly</li>
+              <li>runner owns process isolation and sandboxes</li>
+              <li>services are per-user in multi-user mode</li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       <div class="tools" style="margin-top:1.5rem">

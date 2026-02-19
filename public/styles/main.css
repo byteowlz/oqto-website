@@ -952,13 +952,50 @@ a:hover {
   margin: 1.5rem auto 0;
 }
 
+.arch__split {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.5rem;
+  align-items: center;
+  max-width: 1100px;
+  width: 100%;
+}
+
 .arch__img {
-  max-width: 960px;
   width: 100%;
   height: auto;
   border: 1px solid var(--border);
   background: var(--bg-card);
   padding: 0.75rem;
+}
+
+.arch__text {
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.arch__text h3 {
+  font-size: 0.95rem;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+  text-transform: lowercase;
+}
+
+.arch__text ul {
+  margin: 0.75rem 0 0 1rem;
+  padding: 0;
+}
+
+.arch__text li {
+  margin-bottom: 0.35rem;
+}
+
+@media (max-width: 860px) {
+  .arch__split {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Compact features ── */
