@@ -72,6 +72,11 @@
           own server with multi-user Linux isolation. Web UI for chat, files, terminal,
           and memory. Bring any LLM provider including your own locally hosted ones.
         </p>
+        <p class="hero__description" style="margin-top:0.75rem;font-size:0.85rem;color:var(--fg-muted)">
+          oqto is in early, active development. expect bugs and unfinished features. llm agents
+          are susceptible to prompt injection and data exfiltration. use sandboxing and scoped
+          permissions, and avoid giving agents unrestricted access to sensitive data.
+        </p>
         <div class="hero__install">
           <code class="hero__command">git clone https://github.com/byteowlz/oqto.git && cd oqto && ./setup.sh</code>
           <button class="hero__copy" aria-label="Copy install command">
@@ -92,34 +97,8 @@
   <section id="architecture" class="section section--alt">
     <div class="section__container">
       <h2 class="section__title">architecture</h2>
-
       <div class="arch">
-        <div class="arch__block">
-          <div class="arch__row">
-            <div class="arch__node" data-tooltip="web ui in the browser">
-              <span class="arch__label">Browser</span>
-            </div>
-            <div class="arch__edge">ws</div>
-            <div class="arch__box arch__box--wide" data-tooltip="oqto control plane">
-              <div class="arch__box-title">oqto</div>
-              <div class="arch__box-grid">
-                <div class="arch__svc" data-tooltip="chat history service">hstry</div>
-                <div class="arch__svc" data-tooltip="semantic memory">mmry</div>
-                <div class="arch__svc" data-tooltip="issue/task tracker">trx</div>
-                <div class="arch__svc" data-tooltip="llm proxy">eavs</div>
-              </div>
-              <div class="arch__box-row">
-                <div class="arch__node" data-tooltip="per-user runner daemon">
-                  <span class="arch__label">runner</span>
-                </div>
-                <div class="arch__edge">sandbox</div>
-                <div class="arch__node" data-tooltip="pi agent runtime">
-                  <span class="arch__label">pi</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <img src="/assets/oqto-architecture-simple.svg" alt="oqto architecture" class="arch__img">
       </div>
 
       <h3 class="section__subtitle" style="margin-top:2rem">ecosystem</h3>
