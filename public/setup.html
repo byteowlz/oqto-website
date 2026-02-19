@@ -424,6 +424,7 @@
       border: 1px solid var(--border);
       cursor: pointer;
       transition: all 120ms ease;
+      z-index: 2;
     }
 
     .deploy-cmd__copy:hover {
@@ -1578,12 +1579,36 @@
 
       enforceRequiredTools();
 
+      function fallbackCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'absolute';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+        } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
       function copyWithFeedback(btn, text) {
-        navigator.clipboard.writeText(text).then(function() {
+        var done = function() {
           var orig = btn.textContent;
           btn.textContent = 'copied';
           setTimeout(function() { btn.textContent = orig; }, 1500);
-        });
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function() {
+            fallbackCopy(text);
+            done();
+          });
+        } else {
+          fallbackCopy(text);
+          done();
+        }
       }
 
       $('download-btn').addEventListener('click', function() {
