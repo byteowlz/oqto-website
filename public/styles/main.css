@@ -301,7 +301,7 @@ a:hover {
 }
 
 .hero__install {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.75rem;
   background: var(--bg-code);
@@ -309,7 +309,7 @@ a:hover {
   border-radius: 0;
   padding: 0.75rem 1rem;
   margin-bottom: 1.5rem;
-  width: 100%;
+  width: fit-content;
 }
 
 .dark .hero__install {
