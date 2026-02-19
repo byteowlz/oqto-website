@@ -232,6 +232,62 @@
     .conditional { display: none; }
     .conditional.is-visible { display: block; }
 
+    .custom-provider {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .custom-provider__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .custom-provider__title {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--fg);
+    }
+
+    .custom-provider__remove {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-subtle);
+      background: none;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .custom-provider__remove:hover {
+      color: #e55;
+      border-color: #e55;
+    }
+
+    .custom-provider .field {
+      margin-bottom: 0.75rem;
+    }
+
+    .custom-provider .field__input,
+    .custom-provider .field__select {
+      background: var(--bg-card);
+    }
+
+    .custom-provider__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .custom-provider__row { grid-template-columns: 1fr; }
+    }
+
     .output {
       position: relative;
       margin-top: 2rem;
@@ -310,6 +366,98 @@
 
     .install-cmd__comment {
       color: var(--fg-subtle);
+    }
+
+    .deploy-section {
+      margin-top: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      padding: 1.5rem;
+    }
+
+    .deploy-section__title {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .deploy-section__desc {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .deploy-cmd {
+      position: relative;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .deploy-cmd__pre {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      line-height: 1.7;
+      color: var(--accent);
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+    }
+
+    .deploy-cmd__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      background: var(--bg-card);
+      color: var(--fg-muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .deploy-cmd__copy:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .share-link {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.75rem;
+    }
+
+    .share-link__input {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.4rem 0.6rem;
+      background: var(--bg);
+      color: var(--fg-muted);
+      border: 1px solid var(--border);
+      outline: none;
+    }
+
+    .share-link__input:focus {
+      border-color: var(--accent);
+    }
+
+    .deploy-or {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-subtle);
+      margin: 0.75rem 0;
     }
 
     .note {
@@ -571,6 +719,26 @@
           <span class="provider-row__env">XAI_API_KEY</span>
         </div>
       </div>
+
+      <div style="margin-top:1.25rem">
+        <label class="toggle">
+          <input type="checkbox" id="custom-providers-toggle">
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">Add custom / self-hosted providers</span>
+            <span class="toggle__desc">
+              Azure OpenAI, AWS Bedrock, Ollama, vLLM, LM Studio, SGLang, llama.cpp,
+              or any OpenAI-compatible endpoint.
+            </span>
+          </span>
+        </label>
+      </div>
+
+      <div class="conditional" id="custom-providers-section">
+        <div id="custom-providers-list"></div>
+        <button class="btn btn--small" id="add-custom-provider" style="margin-top:0.75rem">+ Add provider</button>
+      </div>
+
       <div class="note">
         You need at least one provider for agents to work. Anthropic + OpenAI covers most
         use cases. Add more providers later: <code>~/.config/eavs/config.toml</code>
@@ -815,34 +983,55 @@
       </div>
     </section>
 
-    <!-- ── Output ── -->
-    <div class="output">
-      <div class="output__pre" id="output"></div>
-      <div class="output__actions">
-        <button class="btn btn--primary" id="download-btn">Download oqto.setup.toml</button>
-        <button class="btn" id="copy-btn">Copy to clipboard</button>
+    <!-- ── Deploy ── -->
+    <section class="deploy-section">
+      <h2 class="deploy-section__title">Deploy</h2>
+      <p class="deploy-section__desc">
+        Copy this command and paste it into an SSH session on your target server.
+        It clones the repo, writes your config, and runs setup. Only passwords and
+        API keys will be prompted interactively.
+      </p>
+
+      <div class="deploy-cmd">
+        <pre class="deploy-cmd__pre" id="deploy-cmd"></pre>
+        <button class="deploy-cmd__copy" id="deploy-cmd-copy">copy</button>
       </div>
-    </div>
 
-    <div class="install-cmd">
-      <div class="install-cmd__title">How to use this file</div>
-      <div class="install-cmd__code"><span class="install-cmd__comment"># Clone the repo on your target server</span>
-git clone https://github.com/byteowlz/oqto.git &amp;&amp; cd oqto
+      <div class="deploy-or">-- or --</div>
 
-<span class="install-cmd__comment"># Copy the downloaded config file into the repo</span>
-cp ~/Downloads/oqto.setup.toml .
+      <div class="output__actions" style="display:flex;gap:0.75rem">
+        <button class="btn" id="download-btn">Download oqto.setup.toml</button>
+        <button class="btn" id="copy-toml-btn">Copy TOML</button>
+      </div>
 
-<span class="install-cmd__comment"># Run setup -- reads the config file, prompts only for passwords</span>
-./setup.sh --config oqto.setup.toml
+      <div style="margin-top:1rem">
+        <label class="field__label" style="margin-bottom:0.35rem">Shareable link (config encoded in URL -- nothing sent to server)</label>
+        <div class="share-link">
+          <input class="share-link__input" id="share-link" type="text" readonly>
+          <button class="btn btn--small" id="share-link-copy">copy</button>
+        </div>
+        <p class="field__hint">
+          Bookmark this link or share it with your team. Opening it pre-fills the form
+          with your exact settings. The config is encoded in the URL fragment (#) which
+          is never sent to any server.
+        </p>
+      </div>
+    </section>
 
-<span class="install-cmd__comment"># Or run fully interactive (ignores config file, asks everything)</span>
-./setup.sh</div>
-    </div>
+    <!-- ── TOML preview ── -->
+    <details style="margin-top:1.5rem">
+      <summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--fg-muted);cursor:pointer;padding:0.5rem 0">
+        Show generated oqto.setup.toml
+      </summary>
+      <div class="output" style="margin-top:0.5rem">
+        <div class="output__pre" id="output"></div>
+      </div>
+    </details>
 
     <div class="note" style="margin-top:1.5rem">
-      The config file contains no secrets. API keys and passwords are prompted securely
-      during setup or read from environment variables. You can safely commit this file
-      to version control or share it with your team.
+      The config contains no secrets. API keys and passwords are prompted securely
+      during setup or read from environment variables. You can safely share the link
+      or commit the file to version control.
     </div>
   </main>
 
@@ -863,9 +1052,161 @@ cp ~/Downloads/oqto.setup.toml .
     // Configurator
     (function() {
       var $ = function(id) { return document.getElementById(id); };
+      var customProviderCounter = 0;
+
+      // Presets for custom provider types
+      var CUSTOM_PRESETS = {
+        'azure': { label: 'Azure OpenAI', type: 'azure', base_url: 'https://<resource>.openai.azure.com', env_hint: 'AZURE_OPENAI_API_KEY', needs_deployment: true, needs_api_version: true },
+        'bedrock': { label: 'AWS Bedrock', type: 'bedrock', base_url: 'https://bedrock-runtime.<region>.amazonaws.com', env_hint: 'AWS_ACCESS_KEY_ID', needs_region: true },
+        'vertex': { label: 'Google Vertex AI', type: 'google-vertex', base_url: 'https://<location>-aiplatform.googleapis.com', env_hint: 'GOOGLE_APPLICATION_CREDENTIALS', needs_gcp: true },
+        'ollama': { label: 'Ollama', type: 'openai-compatible', base_url: 'http://localhost:11434/v1', env_hint: '(none needed)', no_key: true },
+        'vllm': { label: 'vLLM', type: 'openai-compatible', base_url: 'http://localhost:8000/v1', env_hint: '(none needed)', no_key: true },
+        'lmstudio': { label: 'LM Studio', type: 'openai-compatible', base_url: 'http://localhost:1234/v1', env_hint: '(none needed)', no_key: true },
+        'sglang': { label: 'SGLang', type: 'openai-compatible', base_url: 'http://localhost:30000/v1', env_hint: '(none needed)', no_key: true },
+        'llamacpp': { label: 'llama.cpp', type: 'openai-compatible', base_url: 'http://localhost:8080/v1', env_hint: '(none needed)', no_key: true },
+        'custom': { label: 'Custom OpenAI-compatible', type: 'openai-compatible', base_url: '', env_hint: '' }
+      };
 
       function tomlStr(s) {
         return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+      }
+
+      function addCustomProvider(presetKey) {
+        var preset = CUSTOM_PRESETS[presetKey] || CUSTOM_PRESETS['custom'];
+        var id = 'cp-' + (++customProviderCounter);
+        var container = $('custom-providers-list');
+
+        var div = document.createElement('div');
+        div.className = 'custom-provider';
+        div.dataset.cpId = id;
+
+        var nameDefault = presetKey === 'custom' ? '' : presetKey;
+        var html = '';
+        html += '<div class="custom-provider__header">';
+        html += '<span class="custom-provider__title">' + preset.label + '</span>';
+        html += '<button class="custom-provider__remove" data-cp-id="' + id + '">remove</button>';
+        html += '</div>';
+
+        html += '<div class="custom-provider__row">';
+        html += '<div class="field">';
+        html += '<label class="field__label">Name (unique identifier)</label>';
+        html += '<input class="field__input cp-name" type="text" value="' + nameDefault + '" placeholder="my-provider">';
+        html += '</div>';
+        html += '<div class="field">';
+        html += '<label class="field__label">Type</label>';
+        html += '<select class="field__select cp-type">';
+        html += '<option value="openai-compatible"' + (preset.type === 'openai-compatible' ? ' selected' : '') + '>OpenAI-compatible</option>';
+        html += '<option value="azure"' + (preset.type === 'azure' ? ' selected' : '') + '>Azure OpenAI</option>';
+        html += '<option value="bedrock"' + (preset.type === 'bedrock' ? ' selected' : '') + '>AWS Bedrock</option>';
+        html += '<option value="google-vertex"' + (preset.type === 'google-vertex' ? ' selected' : '') + '>Google Vertex AI</option>';
+        html += '<option value="anthropic">Anthropic (custom endpoint)</option>';
+        html += '<option value="openai">OpenAI (custom endpoint)</option>';
+        html += '</select>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div class="field">';
+        html += '<label class="field__label">Base URL</label>';
+        html += '<input class="field__input cp-base-url" type="text" value="' + preset.base_url + '" placeholder="http://localhost:8080/v1">';
+        if (preset.no_key) {
+          html += '<p class="field__hint">Local inference server -- no API key needed.</p>';
+        } else {
+          html += '<p class="field__hint">The API endpoint. For local servers, use http://localhost:PORT/v1</p>';
+        }
+        html += '</div>';
+
+        if (!preset.no_key) {
+          html += '<div class="custom-provider__row">';
+          html += '<div class="field">';
+          html += '<label class="field__label">API key env variable</label>';
+          html += '<input class="field__input cp-env-key" type="text" value="' + (preset.env_hint || '') + '" placeholder="MY_PROVIDER_API_KEY">';
+          html += '<p class="field__hint">Environment variable name. Key is prompted during setup.</p>';
+          html += '</div>';
+          if (preset.needs_deployment) {
+            html += '<div class="field">';
+            html += '<label class="field__label">Deployment name</label>';
+            html += '<input class="field__input cp-deployment" type="text" placeholder="gpt-4o">';
+            html += '<p class="field__hint">Azure deployment name for the model.</p>';
+            html += '</div>';
+          } else if (preset.needs_region) {
+            html += '<div class="field">';
+            html += '<label class="field__label">AWS Region</label>';
+            html += '<input class="field__input cp-region" type="text" placeholder="us-east-1">';
+            html += '</div>';
+          } else if (preset.needs_gcp) {
+            html += '<div class="field">';
+            html += '<label class="field__label">GCP Project / Location</label>';
+            html += '<input class="field__input cp-gcp" type="text" placeholder="my-project / us-central1">';
+            html += '</div>';
+          } else {
+            html += '<div class="field">';
+            html += '<label class="field__label">Model (optional, for testing)</label>';
+            html += '<input class="field__input cp-model" type="text" placeholder="auto-detected">';
+            html += '</div>';
+          }
+          html += '</div>';
+        }
+
+        if (preset.needs_api_version) {
+          html += '<div class="field">';
+          html += '<label class="field__label">API Version</label>';
+          html += '<input class="field__input cp-api-version" type="text" value="2024-12-01-preview" placeholder="2024-12-01-preview">';
+          html += '</div>';
+        }
+
+        div.innerHTML = html;
+        container.appendChild(div);
+
+        // Wire up events
+        div.querySelector('.custom-provider__remove').addEventListener('click', function() {
+          div.remove();
+          render();
+        });
+        div.querySelectorAll('input, select').forEach(function(el) {
+          el.addEventListener('change', render);
+          el.addEventListener('input', render);
+        });
+        render();
+      }
+
+      function getCustomProviders() {
+        var providers = [];
+        document.querySelectorAll('.custom-provider').forEach(function(div) {
+          var name = (div.querySelector('.cp-name') || {}).value || '';
+          name = name.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+          if (!name) return;
+
+          var p = {
+            name: name,
+            type: (div.querySelector('.cp-type') || {}).value || 'openai-compatible',
+            base_url: (div.querySelector('.cp-base-url') || {}).value || '',
+          };
+
+          var envKey = div.querySelector('.cp-env-key');
+          if (envKey && envKey.value.trim()) p.env_key = envKey.value.trim();
+
+          var deployment = div.querySelector('.cp-deployment');
+          if (deployment && deployment.value.trim()) p.deployment = deployment.value.trim();
+
+          var apiVersion = div.querySelector('.cp-api-version');
+          if (apiVersion && apiVersion.value.trim()) p.api_version = apiVersion.value.trim();
+
+          var region = div.querySelector('.cp-region');
+          if (region && region.value.trim()) p.aws_region = region.value.trim();
+
+          var gcp = div.querySelector('.cp-gcp');
+          if (gcp && gcp.value.trim()) {
+            var parts = gcp.value.split('/').map(function(s) { return s.trim(); });
+            p.gcp_project = parts[0] || '';
+            p.gcp_location = parts[1] || 'us-central1';
+          }
+
+          var model = div.querySelector('.cp-model');
+          if (model && model.value.trim()) p.test_model = model.value.trim();
+
+          providers.push(p);
+        });
+        return providers;
       }
 
       function generateToml() {
@@ -911,12 +1252,30 @@ cp ~/Downloads/oqto.setup.toml .
         document.querySelectorAll('.provider-toggle').forEach(function(t) {
           if (t.checked) active.push(t.dataset.provider);
         });
+        var customProviders = getCustomProviders();
+        customProviders.forEach(function(cp) { active.push(cp.name); });
+
         if (active.length > 0) {
           L.push('[providers]');
           L.push('# API keys are read from environment or prompted during setup');
           L.push('enabled = [' + active.map(tomlStr).join(', ') + ']');
           L.push('');
         }
+
+        // Custom provider sections: [providers.<name>]
+        customProviders.forEach(function(cp) {
+          L.push('[providers.' + cp.name + ']');
+          L.push('type = ' + tomlStr(cp.type));
+          if (cp.base_url) L.push('base_url = ' + tomlStr(cp.base_url));
+          if (cp.env_key) L.push('api_key = ' + tomlStr('env:' + cp.env_key));
+          if (cp.deployment) L.push('deployment = ' + tomlStr(cp.deployment));
+          if (cp.api_version) L.push('api_version = ' + tomlStr(cp.api_version));
+          if (cp.aws_region) L.push('aws_region = ' + tomlStr(cp.aws_region));
+          if (cp.gcp_project) L.push('gcp_project = ' + tomlStr(cp.gcp_project));
+          if (cp.gcp_location) L.push('gcp_location = ' + tomlStr(cp.gcp_location));
+          if (cp.test_model) L.push('test_model = ' + tomlStr(cp.test_model));
+          L.push('');
+        });
 
         // [tools]
         L.push('[tools]');
@@ -953,8 +1312,55 @@ cp ~/Downloads/oqto.setup.toml .
         return L.join('\n') + '\n';
       }
 
+      function encodeConfig(toml) {
+        try {
+          var compressed = new TextEncoder().encode(toml);
+          var binary = '';
+          for (var i = 0; i < compressed.length; i++) {
+            binary += String.fromCharCode(compressed[i]);
+          }
+          return btoa(binary)
+            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch(e) { return ''; }
+      }
+
+      function decodeConfig(encoded) {
+        try {
+          var padded = encoded.replace(/-/g, '+').replace(/_/g, '/');
+          while (padded.length % 4) padded += '=';
+          var binary = atob(padded);
+          var bytes = new Uint8Array(binary.length);
+          for (var i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          return new TextDecoder().decode(bytes);
+        } catch(e) { return ''; }
+      }
+
+      function generateDeployCmd(toml) {
+        var b64 = encodeConfig(toml);
+        return 'git clone https://github.com/byteowlz/oqto.git && cd oqto && \\\n' +
+          "  echo '" + b64 + "' \\\n" +
+          '  | base64 -d > oqto.setup.toml && \\\n' +
+          '  ./setup.sh --config oqto.setup.toml';
+      }
+
+      function generateDeployCmdRaw(toml) {
+        var b64 = encodeConfig(toml);
+        return "git clone https://github.com/byteowlz/oqto.git && cd oqto && echo '" +
+          b64 + "' | base64 -d > oqto.setup.toml && ./setup.sh --config oqto.setup.toml";
+      }
+
+      function generateShareLink(toml) {
+        var b64 = encodeConfig(toml);
+        return window.location.origin + window.location.pathname + '#' + b64;
+      }
+
       function render() {
-        $('output').textContent = generateToml();
+        var toml = generateToml();
+        $('output').textContent = toml;
+        $('deploy-cmd').textContent = generateDeployCmd(toml);
+        $('share-link').value = generateShareLink(toml);
       }
 
       function updateWorkspaceHint() {
@@ -977,6 +1383,7 @@ cp ~/Downloads/oqto.setup.toml .
         $('container-opts').classList.toggle('is-visible', $('backend-mode').value === 'container');
         $('caddy-opts').classList.toggle('is-visible', $('setup-caddy').checked);
         $('tools-individual').classList.toggle('is-visible', !$('tools-all').checked);
+        $('custom-providers-section').classList.toggle('is-visible', $('custom-providers-toggle').checked);
         updateWorkspaceHint();
 
         var sxToggle = document.querySelector('.tool-toggle[data-tool="sx"]');
@@ -996,6 +1403,14 @@ cp ~/Downloads/oqto.setup.toml .
         el.addEventListener('input', function() { render(); });
       });
 
+      function copyWithFeedback(btn, text) {
+        navigator.clipboard.writeText(text).then(function() {
+          var orig = btn.textContent;
+          btn.textContent = 'copied';
+          setTimeout(function() { btn.textContent = orig; }, 1500);
+        });
+      }
+
       $('download-btn').addEventListener('click', function() {
         var toml = generateToml();
         var blob = new Blob([toml], { type: 'application/toml' });
@@ -1007,17 +1422,152 @@ cp ~/Downloads/oqto.setup.toml .
         URL.revokeObjectURL(url);
       });
 
-      $('copy-btn').addEventListener('click', function() {
-        navigator.clipboard.writeText(generateToml()).then(function() {
-          var btn = $('copy-btn');
-          var orig = btn.textContent;
-          btn.textContent = 'Copied';
-          setTimeout(function() { btn.textContent = orig; }, 1500);
-        });
+      $('copy-toml-btn').addEventListener('click', function() {
+        copyWithFeedback(this, generateToml());
       });
 
+      $('deploy-cmd-copy').addEventListener('click', function() {
+        copyWithFeedback(this, generateDeployCmdRaw(generateToml()));
+      });
+
+      $('share-link-copy').addEventListener('click', function() {
+        copyWithFeedback(this, $('share-link').value);
+      });
+
+      // ── Load config from URL fragment ──
+      function loadFromFragment() {
+        var hash = window.location.hash;
+        if (!hash || hash.length < 2) return false;
+
+        var toml = decodeConfig(hash.substring(1));
+        if (!toml || toml.indexOf('[') === -1) return false;
+
+        // Parse the TOML and populate form fields
+        var section = '';
+        toml.split('\n').forEach(function(line) {
+          line = line.replace(/#.*$/, '').trim();
+          if (!line) return;
+
+          var secMatch = line.match(/^\[([a-z_.]+)\]$/);
+          if (secMatch) { section = secMatch[1]; return; }
+
+          var kvMatch = line.match(/^([a-z_]+)\s*=\s*(.+)$/);
+          if (!kvMatch) return;
+
+          var key = kvMatch[1];
+          var val = kvMatch[2].trim();
+
+          // Strip quotes
+          if (val.charAt(0) === '"' && val.charAt(val.length - 1) === '"') {
+            val = val.slice(1, -1);
+          }
+
+          // Parse arrays
+          var isArray = val.charAt(0) === '[';
+          var arrayVals = [];
+          if (isArray) {
+            val.slice(1, -1).split(',').forEach(function(item) {
+              item = item.trim().replace(/^"|"$/g, '');
+              if (item) arrayVals.push(item);
+            });
+          }
+
+          var sk = section + '.' + key;
+
+          // Map to form fields
+          switch(sk) {
+            case 'deployment.user_mode': $('user-mode').value = val; break;
+            case 'deployment.backend_mode': $('backend-mode').value = val; break;
+            case 'deployment.container_runtime': $('container-runtime').value = val; break;
+            case 'deployment.workspace_dir': $('workspace-dir').value = val; break;
+            case 'network.log_level': $('log-level').value = val; break;
+            case 'network.caddy': $('setup-caddy').checked = val === 'true'; break;
+            case 'network.domain': $('domain').value = val; break;
+            case 'admin.username': $('admin-username').value = val; break;
+            case 'admin.email': $('admin-email').value = val; break;
+            case 'providers.enabled':
+              // Uncheck all first
+              document.querySelectorAll('.provider-toggle').forEach(function(t) { t.checked = false; });
+              arrayVals.forEach(function(p) {
+                var toggle = document.querySelector('.provider-toggle[data-provider="' + p + '"]');
+                if (toggle) toggle.checked = true;
+                // TODO: handle custom providers from fragment
+              });
+              break;
+            case 'tools.install_all': $('tools-all').checked = val === 'true'; break;
+            case 'tools.enabled':
+              document.querySelectorAll('.tool-toggle').forEach(function(t) { t.checked = false; });
+              arrayVals.forEach(function(tool) {
+                var t = document.querySelector('.tool-toggle[data-tool="' + tool + '"]');
+                if (t) t.checked = true;
+              });
+              break;
+            case 'tools.searxng':
+              if ($('searxng')) $('searxng').checked = val === 'true';
+              break;
+            case 'hardening.enabled': $('harden').checked = val === 'true'; break;
+            case 'hardening.ssh_port': $('ssh-port').value = val; break;
+            case 'hardening.firewall': $('harden-firewall').checked = val === 'true'; break;
+            case 'hardening.fail2ban': $('harden-fail2ban').checked = val === 'true'; break;
+            case 'hardening.ssh_hardening': $('harden-ssh').checked = val === 'true'; break;
+            case 'hardening.auto_updates': $('harden-updates').checked = val === 'true'; break;
+            case 'hardening.kernel_security': $('harden-kernel').checked = val === 'true'; break;
+          }
+        });
+
+        return true;
+      }
+
+      // ── Add custom provider button ──
+      $('add-custom-provider').addEventListener('click', function() {
+        // Show a quick picker
+        var keys = Object.keys(CUSTOM_PRESETS);
+        var picker = document.createElement('div');
+        picker.style.cssText = 'display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem';
+        keys.forEach(function(k) {
+          var btn = document.createElement('button');
+          btn.className = 'btn btn--small';
+          btn.textContent = CUSTOM_PRESETS[k].label;
+          btn.addEventListener('click', function() {
+            addCustomProvider(k);
+            picker.remove();
+          });
+          picker.appendChild(btn);
+        });
+        this.parentNode.insertBefore(picker, this.nextSibling);
+        // Remove picker on next click outside
+        setTimeout(function() {
+          document.addEventListener('click', function handler(e) {
+            if (!picker.contains(e.target)) {
+              picker.remove();
+              document.removeEventListener('click', handler);
+            }
+          });
+        }, 0);
+      });
+
+      // ── Init ──
+      var loaded = loadFromFragment();
       updateVisibility();
       render();
+
+      // Update URL fragment on changes (debounced)
+      var fragmentTimer;
+      function updateFragment() {
+        clearTimeout(fragmentTimer);
+        fragmentTimer = setTimeout(function() {
+          var toml = generateToml();
+          var encoded = encodeConfig(toml);
+          if (encoded) {
+            history.replaceState(null, '', '#' + encoded);
+          }
+        }, 500);
+      }
+
+      document.querySelectorAll('input, select').forEach(function(el) {
+        el.addEventListener('change', updateFragment);
+        el.addEventListener('input', updateFragment);
+      });
     })();
   </script>
 </body>
