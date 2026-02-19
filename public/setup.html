@@ -1520,6 +1520,8 @@
             p.classList.toggle('is-active', p.id === 'deploy-panel-toml');
           });
         }
+
+        scheduleFragmentUpdate();
       }
 
       function updateWorkspaceHint() {
@@ -1743,7 +1745,7 @@
 
       // Update URL fragment on changes (debounced)
       var fragmentTimer;
-      function updateFragment() {
+      function scheduleFragmentUpdate() {
         clearTimeout(fragmentTimer);
         fragmentTimer = setTimeout(function() {
           var toml = generateToml();
@@ -1754,9 +1756,10 @@
         }, 500);
       }
 
+      // Update fragment for all inputs that trigger render
       document.querySelectorAll('input, select').forEach(function(el) {
-        el.addEventListener('change', updateFragment);
-        el.addEventListener('input', updateFragment);
+        el.addEventListener('change', scheduleFragmentUpdate);
+        el.addEventListener('input', scheduleFragmentUpdate);
       });
     })();
   </script>
