@@ -1,11 +1,11 @@
-# Oqto Website
+# oqto Website
 
-A modern, minimal documentation website for Oqto - the self-hosted AI agent platform.
+A modern, minimal documentation website for oqto - the self-hosted AI agent platform.
 
 ## Features
 
 - **Dark/Light Mode**: Automatic theme switching with user preference persistence
-- **Modern Design**: Clean, minimal aesthetic inspired by pi.dev but with Oqto's own identity
+- **Modern Design**: Clean, minimal aesthetic inspired by pi.dev but with oqto's own identity
 - **Responsive**: Works beautifully on desktop, tablet, and mobile
 - **Fast**: Plain TypeScript with no heavy frameworks - just clean HTML, CSS, and TS
 - **Accessible**: Semantic HTML, ARIA labels, keyboard navigation support
@@ -72,6 +72,7 @@ bun run preview
 ```
 
 The build output is in `./dist` and includes:
+
 - Minified JavaScript
 - Copied static assets
 - Ready for deployment
