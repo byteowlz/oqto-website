@@ -13,15 +13,15 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Oqto Setup Configurator - Generate your oqto.setup.toml">
-  <title>Oqto -- Setup Configurator</title>
+  <meta name="description" content="oqto setup configurator - generate your oqto.setup.toml">
+  <title>oqto -- setup configurator</title>
   <link rel="icon" type="image/svg+xml" href="/assets/oqto-icon-white.svg">
   <link rel="stylesheet" href="/styles/main.css">
   <style>
     .setup {
       max-width: 780px;
       margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
+      padding: calc(2rem + 3.5rem) 1.5rem 4rem;
     }
 
     .setup__header {
@@ -512,7 +512,7 @@
       <h1 class="setup__title">Setup Configurator</h1>
       <p class="setup__subtitle">
         Build your <code>oqto.setup.toml</code> configuration file. This drives the
-        non-interactive installer so you can deploy Oqto on a fresh server without
+        non-interactive installer so you can deploy oqto on a fresh server without
         answering prompts. Everything runs in your browser -- nothing is sent anywhere.
       </p>
     </div>
@@ -521,7 +521,7 @@
     <section class="setup__section">
       <h2 class="setup__section-title">Deployment</h2>
       <p class="setup__section-desc">
-        How Oqto runs on your server. These choices affect isolation, security, and
+        How oqto runs on your server. These choices affect isolation, security, and
         resource usage.
       </p>
 
@@ -589,7 +589,7 @@
         <span class="toggle__text">
           <span class="toggle__label">Caddy Reverse Proxy</span>
           <span class="toggle__desc">
-            Installs Caddy as a reverse proxy in front of Oqto. Automatically obtains
+            Installs Caddy as a reverse proxy in front of oqto. Automatically obtains
             and renews Let's Encrypt TLS certificates for your domain. Handles HTTP-to-HTTPS
             redirect, WebSocket proxying, and static file serving. Skip this if you already
             have nginx/traefik or are running locally.
@@ -647,7 +647,7 @@
     <section class="setup__section">
       <h2 class="setup__section-title">LLM Providers</h2>
       <p class="setup__section-desc">
-        Select which LLM providers to configure. Oqto uses EAVS as an LLM proxy that sits
+        Select which LLM providers to configure. oqto uses EAVS as an LLM proxy that sits
         between agents and provider APIs. This gives you a single endpoint for all providers,
         per-user virtual API keys, usage tracking, and rate limit management.<br><br>
         API keys are not stored in this file. During setup, the installer will check your
@@ -1211,7 +1211,7 @@
 
       function generateToml() {
         var L = [];
-        L.push('# Oqto Setup Configuration');
+        L.push('# oqto setup configuration');
         L.push('# Generated at https://oqto.dev/setup');
         L.push('# Usage: ./setup.sh --config oqto.setup.toml');
         L.push('');
@@ -1337,18 +1337,112 @@
         } catch(e) { return ''; }
       }
 
-      function generateDeployCmd(toml) {
-        var b64 = encodeConfig(toml);
-        return 'git clone https://github.com/byteowlz/oqto.git && cd oqto && \\\n' +
-          "  echo '" + b64 + "' \\\n" +
-          '  | base64 -d > oqto.setup.toml && \\\n' +
-          '  ./setup.sh --config oqto.setup.toml';
+      function generateEnvVars() {
+        var vars = [];
+
+        // Deployment
+        var userMode = $('user-mode').value;
+        if (userMode !== 'single') vars.push('OQTO_USER_MODE=' + userMode);
+        var ws = $('workspace-dir').value.trim();
+        if (ws) vars.push('OQTO_WORKSPACE_DIR=' + shellQuote(ws));
+
+        // Network
+        var logLevel = $('log-level').value;
+        if (logLevel !== 'info') vars.push('OQTO_LOG_LEVEL=' + logLevel);
+        if ($('setup-caddy').checked) {
+          vars.push('OQTO_SETUP_CADDY=yes');
+          var domain = $('domain').value.trim();
+          if (domain) vars.push('OQTO_DOMAIN=' + domain);
+        }
+
+        // Admin
+        var adminUser = $('admin-username').value.trim();
+        if (adminUser && adminUser !== 'admin') vars.push('OQTO_ADMIN_USER=' + adminUser);
+        var adminEmail = $('admin-email').value.trim();
+        if (adminEmail) vars.push('OQTO_ADMIN_EMAIL=' + adminEmail);
+
+        // Providers
+        var active = [];
+        document.querySelectorAll('.provider-toggle').forEach(function(t) {
+          if (t.checked) active.push(t.dataset.provider);
+        });
+        var customProviders = getCustomProviders();
+        customProviders.forEach(function(cp) { active.push(cp.name); });
+        if (active.length > 0) vars.push('OQTO_PROVIDERS=' + shellQuote(active.join(',')));
+
+        // Tools
+        var allTools = $('tools-all').checked;
+        if (allTools) {
+          vars.push('OQTO_INSTALL_ALL_TOOLS=yes');
+        } else {
+          var tools = [];
+          document.querySelectorAll('.tool-toggle').forEach(function(t) {
+            if (t.checked) tools.push(t.dataset.tool);
+          });
+          if (tools.length > 0) vars.push('OQTO_TOOLS=' + shellQuote(tools.join(',')));
+        }
+
+        // Hardening
+        var harden = $('harden').checked;
+        if (harden) {
+          vars.push('OQTO_HARDEN_SERVER=yes');
+          var port = parseInt($('ssh-port').value) || 22;
+          if (port !== 22) vars.push('OQTO_SSH_PORT=' + port);
+          if (!$('harden-firewall').checked) vars.push('OQTO_SETUP_FIREWALL=no');
+          if (!$('harden-fail2ban').checked) vars.push('OQTO_SETUP_FAIL2BAN=no');
+          if (!$('harden-ssh').checked) vars.push('OQTO_HARDEN_SSH=no');
+          if (!$('harden-updates').checked) vars.push('OQTO_SETUP_AUTO_UPDATES=no');
+          if (!$('harden-kernel').checked) vars.push('OQTO_HARDEN_KERNEL=no');
+        } else {
+          vars.push('OQTO_HARDEN_SERVER=no');
+        }
+
+        return vars;
       }
 
-      function generateDeployCmdRaw(toml) {
-        var b64 = encodeConfig(toml);
-        return "git clone https://github.com/byteowlz/oqto.git && cd oqto && echo '" +
-          b64 + "' | base64 -d > oqto.setup.toml && ./setup.sh --config oqto.setup.toml";
+      function shellQuote(s) {
+        if (/^[a-zA-Z0-9_./:,-]+$/.test(s)) return s;
+        return "'" + s.replace(/'/g, "'\\''") + "'";
+      }
+
+      function generateDeployCmd() {
+        var vars = generateEnvVars();
+        var lines = ['git clone https://github.com/byteowlz/oqto.git && cd oqto && \\'];
+
+        // Custom providers need a config file (env vars can't express nested TOML)
+        var customProviders = getCustomProviders();
+        if (customProviders.length > 0) {
+          // Fall back to TOML file for custom providers
+          lines.push('  cat > oqto.setup.toml << \'OQTO_EOF\'');
+          lines.push(generateToml().trimEnd());
+          lines.push('OQTO_EOF');
+          lines.push('  ./setup.sh --config oqto.setup.toml');
+        } else {
+          // Pure env vars -- fully readable
+          if (vars.length > 0) {
+            vars.forEach(function(v, i) {
+              var prefix = (i === 0) ? '  ' : '  ';
+              var suffix = ' \\';
+              lines.push(prefix + v + suffix);
+            });
+          }
+          lines.push('  ./setup.sh --non-interactive');
+        }
+        return lines.join('\n');
+      }
+
+      function generateDeployCmdRaw() {
+        var vars = generateEnvVars();
+        var customProviders = getCustomProviders();
+        if (customProviders.length > 0) {
+          // With custom providers, use heredoc inline
+          return "git clone https://github.com/byteowlz/oqto.git && cd oqto && " +
+            "cat > oqto.setup.toml << 'OQTO_EOF'\n" +
+            generateToml().trimEnd() + "\nOQTO_EOF\n" +
+            "./setup.sh --config oqto.setup.toml";
+        }
+        return 'git clone https://github.com/byteowlz/oqto.git && cd oqto && ' +
+          vars.join(' ') + ' ./setup.sh --non-interactive';
       }
 
       function generateShareLink(toml) {
@@ -1359,7 +1453,7 @@
       function render() {
         var toml = generateToml();
         $('output').textContent = toml;
-        $('deploy-cmd').textContent = generateDeployCmd(toml);
+        $('deploy-cmd').textContent = generateDeployCmd();
         $('share-link').value = generateShareLink(toml);
       }
 
@@ -1427,7 +1521,7 @@
       });
 
       $('deploy-cmd-copy').addEventListener('click', function() {
-        copyWithFeedback(this, generateDeployCmdRaw(generateToml()));
+        copyWithFeedback(this, generateDeployCmdRaw());
       });
 
       $('share-link-copy').addEventListener('click', function() {
