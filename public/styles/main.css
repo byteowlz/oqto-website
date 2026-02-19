@@ -391,6 +391,7 @@ a:hover {
 .hero__cta:hover {
   border-color: var(--accent);
   color: var(--accent);
+  text-decoration: none;
 }
 
 .hero__cta--primary {
