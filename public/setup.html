@@ -1462,10 +1462,11 @@
         var input = $('workspace-dir');
         var hint = $('workspace-hint');
         if (isMulti) {
-          input.placeholder = '/home/oqto_*/workspace';
+          input.placeholder = '/home/{linux_username}/oqto';
           hint.innerHTML = 'In multi-user mode, each platform user gets their own workspace at ' +
-            '<code>/home/oqto_&lt;username&gt;-&lt;id&gt;/workspace</code>. ' +
-            'This path is per-user and managed automatically. Leave empty for the default.';
+            '<code>/home/{linux_username}/oqto</code>. ' +
+            'The installer replaces <code>{linux_username}</code> with the generated ' +
+            'user account name (e.g. <code>oqto_alice-9x7p</code>). Leave empty for the default.';
         } else {
           input.placeholder = '~/oqto/workspace';
           hint.innerHTML = 'Where your agent project files live. A single directory for all sessions. ' +
