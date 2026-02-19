@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <script>
+    (function() {
+      var stored = null;
+      try { stored = localStorage.getItem('oqto-theme'); } catch(e) {}
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var isDark = stored === 'dark' || (!stored && prefersDark);
+      if (isDark) document.documentElement.classList.add('dark');
+      document.documentElement.style.background = isDark ? '#222624' : '#f2f5f3';
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Oqto Setup Configurator - Generate your oqto.setup.toml">
+  <title>Oqto -- Setup Configurator</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/oqto-icon-white.svg">
+  <link rel="stylesheet" href="/styles/main.css">
+  <style>
+    .setup {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .setup__header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setup__title {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 0.5rem;
+    }
+
+    .setup__subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--fg-muted);
+      line-height: 1.6;
+    }
+
+    .setup__section {
+      margin-bottom: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+    }
+
+    .setup__section-title {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .setup__section-desc {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .field {
+      margin-bottom: 1.25rem;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field__label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 0.35rem;
+    }
+
+    .field__hint {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-subtle);
+      margin-top: 0.3rem;
+      line-height: 1.5;
+    }
+
+    .field__input,
+    .field__select {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      outline: none;
+      transition: border-color 120ms ease;
+    }
+
+    .field__input:focus,
+    .field__select:focus {
+      border-color: var(--accent);
+    }
+
+    .field__select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6360' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle__switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      transition: background 120ms ease, border-color 120ms ease;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .toggle__switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      background: var(--fg-muted);
+      transition: transform 120ms ease, background 120ms ease;
+    }
+
+    .toggle input { display: none; }
+
+    .toggle input:checked + .toggle__switch {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+    }
+
+    .toggle input:checked + .toggle__switch::after {
+      transform: translateX(16px);
+      background: var(--accent);
+    }
+
+    .toggle__text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .toggle__label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    .toggle__desc {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-subtle);
+      line-height: 1.5;
+    }
+
+    .providers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .provider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .provider-row.is-active {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .provider-row__name {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--fg);
+      min-width: 130px;
+    }
+
+    .provider-row__desc {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-subtle);
+      flex: 1;
+    }
+
+    .provider-row__env {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--fg-subtle);
+      min-width: 150px;
+      text-align: right;
+    }
+
+    .conditional { display: none; }
+    .conditional.is-visible { display: block; }
+
+    .output {
+      position: relative;
+      margin-top: 2rem;
+    }
+
+    .output__pre {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.6;
+      padding: 1.25rem;
+      background: var(--bg-code);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      white-space: pre;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .output__actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.6rem 1.25rem;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+    }
+
+    .btn--primary {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+
+    .btn--primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .install-cmd {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+    }
+
+    .install-cmd__title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 0.75rem;
+    }
+
+    .install-cmd__code {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      line-height: 1.8;
+      white-space: pre;
+    }
+
+    .install-cmd__comment {
+      color: var(--fg-subtle);
+    }
+
+    .note {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-subtle);
+      line-height: 1.5;
+      padding: 0.75rem;
+      background: var(--accent-subtle);
+      border-left: 3px solid var(--accent);
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .setup { padding: 1rem; }
+      .provider-row { flex-wrap: wrap; }
+      .provider-row__env { min-width: auto; text-align: left; }
+      .provider-row__desc { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__container">
+      <a href="/" class="nav__logo">
+        <img src="/assets/oqto-text-black.svg" alt="oqto" class="nav__logo-text nav__logo-text--light">
+        <img src="/assets/oqto-text-white.svg" alt="oqto" class="nav__logo-text nav__logo-text--dark">
+      </a>
+      <div class="nav__actions">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <span class="theme-toggle__sun">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+          <span class="theme-toggle__moon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="setup">
+    <div class="setup__header">
+      <h1 class="setup__title">Setup Configurator</h1>
+      <p class="setup__subtitle">
+        Build your <code>oqto.setup.toml</code> configuration file. This drives the
+        non-interactive installer so you can deploy Oqto on a fresh server without
+        answering prompts. Everything runs in your browser -- nothing is sent anywhere.
+      </p>
+    </div>
+
+    <!-- ── Deployment ── -->
+    <section class="setup__section">
+      <h2 class="setup__section-title">Deployment</h2>
+      <p class="setup__section-desc">
+        How Oqto runs on your server. These choices affect isolation, security, and
+        resource usage.
+      </p>
+
+      <div class="field">
+        <label class="field__label" for="user-mode">User Mode</label>
+        <select class="field__select" id="user-mode">
+          <option value="single">Single User</option>
+          <option value="multi" selected>Multi User</option>
+        </select>
+        <p class="field__hint">
+          <strong>Single User</strong> runs everything as your login user. Good for personal
+          machines and development. All agents share your filesystem and permissions.<br>
+          <strong>Multi User</strong> creates isolated Linux users (oqto_username-xxxx) for each
+          platform user. Each gets their own home directory, systemd services, and file
+          permissions. Required for shared servers and production.
+        </p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="backend-mode">Backend Mode</label>
+        <select class="field__select" id="backend-mode">
+          <option value="local" selected>Local (native processes)</option>
+          <option value="container" disabled>Container (Docker/Podman) -- coming soon</option>
+        </select>
+        <p class="field__hint">
+          <strong>Local</strong> spawns agent processes directly on the host. Lower overhead,
+          easier debugging, and full access to local tools (compilers, git, etc.).<br>
+          <strong>Container</strong> mode (Docker/Podman isolation) is planned but not yet available.
+        </p>
+      </div>
+
+      <div class="conditional" id="container-opts">
+        <div class="field">
+          <label class="field__label" for="container-runtime">Container Runtime</label>
+          <select class="field__select" id="container-runtime">
+            <option value="auto">Auto-detect</option>
+            <option value="docker">Docker</option>
+            <option value="podman">Podman</option>
+          </select>
+          <p class="field__hint">
+            Auto-detect picks whichever is installed. Podman runs rootless by default
+            which is better for security. Docker requires the Docker daemon.
+          </p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="workspace-dir">Workspace Directory</label>
+        <input class="field__input" type="text" id="workspace-dir">
+        <p class="field__hint" id="workspace-hint"></p>
+      </div>
+    </section>
+
+    <!-- ── Network ── -->
+    <section class="setup__section">
+      <h2 class="setup__section-title">Network</h2>
+      <p class="setup__section-desc">
+        HTTPS, domain, and logging. If you are deploying to a server with a public domain,
+        enable Caddy for automatic TLS.
+      </p>
+
+      <label class="toggle">
+        <input type="checkbox" id="setup-caddy">
+        <span class="toggle__switch"></span>
+        <span class="toggle__text">
+          <span class="toggle__label">Caddy Reverse Proxy</span>
+          <span class="toggle__desc">
+            Installs Caddy as a reverse proxy in front of Oqto. Automatically obtains
+            and renews Let's Encrypt TLS certificates for your domain. Handles HTTP-to-HTTPS
+            redirect, WebSocket proxying, and static file serving. Skip this if you already
+            have nginx/traefik or are running locally.
+          </span>
+        </span>
+      </label>
+
+      <div class="conditional" id="caddy-opts">
+        <div class="field">
+          <label class="field__label" for="domain">Domain</label>
+          <input class="field__input" type="text" id="domain" placeholder="oqto.example.com">
+          <p class="field__hint">
+            The public domain pointing to your server (A record). Caddy uses this to request
+            a TLS certificate from Let's Encrypt. Port 80 and 443 must be reachable from the
+            internet for the ACME challenge.
+          </p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="log-level">Log Level</label>
+        <select class="field__select" id="log-level">
+          <option value="info" selected>info -- normal operation</option>
+          <option value="warn">warn -- warnings and errors only</option>
+          <option value="error">error -- errors only</option>
+          <option value="debug">debug -- verbose, includes request details</option>
+          <option value="trace">trace -- extremely verbose, for development</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ── Admin ── -->
+    <section class="setup__section">
+      <h2 class="setup__section-title">Admin User</h2>
+      <p class="setup__section-desc">
+        The first user account created during setup. This account has full admin
+        privileges: managing users, viewing system status, and configuring providers.
+        The password is never stored in this file -- it will be prompted securely during
+        installation.
+      </p>
+      <div class="field">
+        <label class="field__label" for="admin-username">Username</label>
+        <input class="field__input" type="text" id="admin-username" value="admin">
+      </div>
+      <div class="field">
+        <label class="field__label" for="admin-email">Email</label>
+        <input class="field__input" type="email" id="admin-email" placeholder="admin@example.com">
+        <p class="field__hint">
+          Used for login and notifications. Can be changed later in the admin panel.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── LLM Providers ── -->
+    <section class="setup__section">
+      <h2 class="setup__section-title">LLM Providers</h2>
+      <p class="setup__section-desc">
+        Select which LLM providers to configure. Oqto uses EAVS as an LLM proxy that sits
+        between agents and provider APIs. This gives you a single endpoint for all providers,
+        per-user virtual API keys, usage tracking, and rate limit management.<br><br>
+        API keys are not stored in this file. During setup, the installer will check your
+        environment for existing keys (e.g. <code>$OPENAI_API_KEY</code>) and prompt for any
+        missing ones. You can add or change providers later by editing the EAVS config.
+      </p>
+      <div class="providers" id="providers">
+        <div class="provider-row" data-provider="anthropic">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="anthropic" checked>
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">Anthropic</span>
+          <span class="provider-row__desc">Claude models (Sonnet, Opus, Haiku)</span>
+          <span class="provider-row__env">ANTHROPIC_API_KEY</span>
+        </div>
+        <div class="provider-row" data-provider="openai">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="openai" checked>
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">OpenAI</span>
+          <span class="provider-row__desc">GPT-4o, o1, o3, Codex</span>
+          <span class="provider-row__env">OPENAI_API_KEY</span>
+        </div>
+        <div class="provider-row" data-provider="google">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="google">
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">Google</span>
+          <span class="provider-row__desc">Gemini 2.5 Pro, Flash</span>
+          <span class="provider-row__env">GEMINI_API_KEY</span>
+        </div>
+        <div class="provider-row" data-provider="openrouter">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="openrouter">
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">OpenRouter</span>
+          <span class="provider-row__desc">Aggregator: access 200+ models via one key</span>
+          <span class="provider-row__env">OPENROUTER_API_KEY</span>
+        </div>
+        <div class="provider-row" data-provider="groq">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="groq">
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">Groq</span>
+          <span class="provider-row__desc">Ultra-fast inference (Llama, Mixtral)</span>
+          <span class="provider-row__env">GROQ_API_KEY</span>
+        </div>
+        <div class="provider-row" data-provider="mistral">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="mistral">
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">Mistral AI</span>
+          <span class="provider-row__desc">Mistral Large, Codestral</span>
+          <span class="provider-row__env">MISTRAL_API_KEY</span>
+        </div>
+        <div class="provider-row" data-provider="xai">
+          <label class="toggle" style="margin:0;padding:0;gap:0.5rem">
+            <input type="checkbox" class="provider-toggle" data-provider="xai">
+            <span class="toggle__switch"></span>
+          </label>
+          <span class="provider-row__name">xAI</span>
+          <span class="provider-row__desc">Grok models</span>
+          <span class="provider-row__env">XAI_API_KEY</span>
+        </div>
+      </div>
+      <div class="note">
+        You need at least one provider for agents to work. Anthropic + OpenAI covers most
+        use cases. Add more providers later: <code>~/.config/eavs/config.toml</code>
+      </div>
+    </section>
+
+    <!-- ── Agent Tools ── -->
+    <section class="setup__section">
+      <h2 class="setup__section-title">Agent Tools</h2>
+      <p class="setup__section-desc">
+        CLI tools available to AI agents in their workspace. These extend what agents can
+        do beyond code editing -- searching the web, managing memory, generating documents, etc.
+        All tools are installed to <code>/usr/local/bin</code> and available to all users.
+      </p>
+
+      <label class="toggle">
+        <input type="checkbox" id="tools-all" checked>
+        <span class="toggle__switch"></span>
+        <span class="toggle__text">
+          <span class="toggle__label">Install all tools (recommended)</span>
+          <span class="toggle__desc">
+            Installs the full toolkit. Individual tools can be uninstalled later.
+            Total disk usage is ~200MB.
+          </span>
+        </span>
+      </label>
+
+      <div class="conditional" id="tools-individual">
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="agntz" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">agntz</span>
+            <span class="toggle__desc">
+              Agent toolkit -- wraps memory, issues, file reservations, and inter-agent
+              messaging into a single CLI. Required for most agent workflows.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="mmry" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">mmry</span>
+            <span class="toggle__desc">
+              Semantic memory storage and search. Agents use this to persist insights
+              across sessions -- architecture decisions, API patterns, debugging notes.
+              Uses local embeddings (no external API calls for search).
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="hstry" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">hstry</span>
+            <span class="toggle__desc">
+              Chat history daemon (gRPC API, SQLite-backed). Stores all conversation
+              messages in a structured, searchable format. Required for the chat UI.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="scrpr" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">scrpr</span>
+            <span class="toggle__desc">
+              Web content extraction. Fetches and cleans web pages into
+              markdown that agents can read. Handles JavaScript-rendered sites.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="sx" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">sx</span>
+            <span class="toggle__desc">
+              Web search via a local SearXNG instance. Agents can search the internet
+              without sending queries to external search APIs. Binds to localhost only.
+              Enabling this also installs SearXNG and Valkey (for caching).
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="tmpltr">
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">tmpltr</span>
+            <span class="toggle__desc">
+              Document generation from Typst templates. Create PDFs, reports, and
+              formatted documents programmatically. Also installs the Typst compiler.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="sldr">
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">sldr</span>
+            <span class="toggle__desc">
+              Modular presentation builder powered by Slidev (sli.dev). Create, reuse,
+              and brand slide decks from markdown. Also installs Slidev globally.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="ignr">
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">ignr</span>
+            <span class="toggle__desc">
+              Gitignore file generation. Quickly create .gitignore files for any
+              language or framework.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" class="tool-toggle" data-tool="trx">
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">trx</span>
+            <span class="toggle__desc">
+              Issue and task tracking that lives inside the repo (.trx directory).
+              Agents use this to plan work, track progress, and coordinate across sessions.
+            </span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── SearXNG ── -->
+    <div class="conditional" id="searxng-opts">
+      <section class="setup__section">
+        <h2 class="setup__section-title">SearXNG</h2>
+        <p class="setup__section-desc">
+          A self-hosted metasearch engine that aggregates results from multiple search engines
+          without tracking. Required for the <code>sx</code> tool. Runs on localhost:8888 with
+          Valkey for result caching. Uses ~100MB RAM.
+        </p>
+        <label class="toggle">
+          <input type="checkbox" id="searxng" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">Install SearXNG</span>
+            <span class="toggle__desc">
+              Installs SearXNG from source, Valkey for caching, and configures the
+              systemd service. Binds to 127.0.0.1:8888 (not externally accessible).
+            </span>
+          </span>
+        </label>
+      </section>
+    </div>
+
+    <!-- ── Server Hardening ── -->
+    <section class="setup__section">
+      <h2 class="setup__section-title">Server Hardening</h2>
+      <p class="setup__section-desc">
+        Security measures for production servers exposed to the internet.
+        These are standard Linux hardening practices and are strongly recommended
+        for any public-facing deployment. Skip for local development.
+      </p>
+
+      <label class="toggle">
+        <input type="checkbox" id="harden" checked>
+        <span class="toggle__switch"></span>
+        <span class="toggle__text">
+          <span class="toggle__label">Enable server hardening</span>
+        </span>
+      </label>
+
+      <div class="conditional" id="harden-opts">
+        <div class="field">
+          <label class="field__label" for="ssh-port">SSH Port</label>
+          <input class="field__input" type="number" id="ssh-port" value="22" min="1" max="65535">
+          <p class="field__hint">
+            Changing from the default 22 reduces automated brute-force attempts.
+            Common alternatives: 2222, 2200, or any high port. Make sure your cloud
+            provider's firewall allows the new port before changing.
+          </p>
+        </div>
+
+        <label class="toggle">
+          <input type="checkbox" id="harden-firewall" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">Firewall (UFW)</span>
+            <span class="toggle__desc">
+              Configures UFW to allow only SSH, HTTP (80), and HTTPS (443). All other
+              inbound ports are blocked. Outbound traffic is unrestricted.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="harden-fail2ban" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">Fail2ban</span>
+            <span class="toggle__desc">
+              Monitors SSH logs and temporarily bans IPs after 3 failed login attempts.
+              Effective against brute-force attacks. Bans last 10 minutes by default.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="harden-ssh" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">SSH hardening</span>
+            <span class="toggle__desc">
+              Disables password authentication (key-only), disables root login,
+              limits max auth tries, and enables strict mode. Make sure you have
+              SSH key access configured before enabling.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="harden-updates" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">Automatic security updates</span>
+            <span class="toggle__desc">
+              Enables unattended-upgrades for security patches. Only security updates
+              are applied automatically -- no major version changes. Reduces the
+              window of vulnerability for known CVEs.
+            </span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="harden-kernel" checked>
+          <span class="toggle__switch"></span>
+          <span class="toggle__text">
+            <span class="toggle__label">Kernel security parameters</span>
+            <span class="toggle__desc">
+              Applies sysctl settings: disable IP forwarding, enable SYN cookies,
+              ignore ICMP redirects, enable reverse path filtering, and restrict
+              kernel pointer exposure. Standard hardening for any Linux server.
+            </span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── Output ── -->
+    <div class="output">
+      <div class="output__pre" id="output"></div>
+      <div class="output__actions">
+        <button class="btn btn--primary" id="download-btn">Download oqto.setup.toml</button>
+        <button class="btn" id="copy-btn">Copy to clipboard</button>
+      </div>
+    </div>
+
+    <div class="install-cmd">
+      <div class="install-cmd__title">How to use this file</div>
+      <div class="install-cmd__code"><span class="install-cmd__comment"># Clone the repo on your target server</span>
+git clone https://github.com/byteowlz/oqto.git &amp;&amp; cd oqto
+
+<span class="install-cmd__comment"># Copy the downloaded config file into the repo</span>
+cp ~/Downloads/oqto.setup.toml .
+
+<span class="install-cmd__comment"># Run setup -- reads the config file, prompts only for passwords</span>
+./setup.sh --config oqto.setup.toml
+
+<span class="install-cmd__comment"># Or run fully interactive (ignores config file, asks everything)</span>
+./setup.sh</div>
+    </div>
+
+    <div class="note" style="margin-top:1.5rem">
+      The config file contains no secrets. API keys and passwords are prompted securely
+      during setup or read from environment variables. You can safely commit this file
+      to version control or share it with your team.
+    </div>
+  </main>
+
+  <script>
+    // Theme toggle
+    (function() {
+      var btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          document.documentElement.classList.toggle('dark');
+          var isDark = document.documentElement.classList.contains('dark');
+          try { localStorage.setItem('oqto-theme', isDark ? 'dark' : 'light'); } catch(e) {}
+          document.documentElement.style.background = isDark ? '#222624' : '#f2f5f3';
+        });
+      }
+    })();
+
+    // Configurator
+    (function() {
+      var $ = function(id) { return document.getElementById(id); };
+
+      function tomlStr(s) {
+        return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+      }
+
+      function generateToml() {
+        var L = [];
+        L.push('# Oqto Setup Configuration');
+        L.push('# Generated at https://oqto.dev/setup');
+        L.push('# Usage: ./setup.sh --config oqto.setup.toml');
+        L.push('');
+
+        // [deployment]
+        L.push('[deployment]');
+        L.push('user_mode = ' + tomlStr($('user-mode').value));
+        L.push('backend_mode = ' + tomlStr($('backend-mode').value));
+        if ($('backend-mode').value === 'container') {
+          L.push('container_runtime = ' + tomlStr($('container-runtime').value));
+        }
+        var ws = $('workspace-dir').value.trim();
+        if (ws) L.push('workspace_dir = ' + tomlStr(ws));
+        L.push('');
+
+        // [network]
+        L.push('[network]');
+        L.push('log_level = ' + tomlStr($('log-level').value));
+        var caddy = $('setup-caddy').checked;
+        L.push('caddy = ' + caddy);
+        if (caddy) {
+          var domain = $('domain').value.trim();
+          if (domain) L.push('domain = ' + tomlStr(domain));
+        }
+        L.push('');
+
+        // [admin]
+        L.push('[admin]');
+        L.push('# Password is prompted during setup -- never stored in this file');
+        var adminUser = $('admin-username').value.trim() || 'admin';
+        var adminEmail = $('admin-email').value.trim();
+        L.push('username = ' + tomlStr(adminUser));
+        if (adminEmail) L.push('email = ' + tomlStr(adminEmail));
+        L.push('');
+
+        // [providers]
+        var active = [];
+        document.querySelectorAll('.provider-toggle').forEach(function(t) {
+          if (t.checked) active.push(t.dataset.provider);
+        });
+        if (active.length > 0) {
+          L.push('[providers]');
+          L.push('# API keys are read from environment or prompted during setup');
+          L.push('enabled = [' + active.map(tomlStr).join(', ') + ']');
+          L.push('');
+        }
+
+        // [tools]
+        L.push('[tools]');
+        var allTools = $('tools-all').checked;
+        L.push('install_all = ' + allTools);
+        if (!allTools) {
+          var tools = [];
+          document.querySelectorAll('.tool-toggle').forEach(function(t) {
+            if (t.checked) tools.push(t.dataset.tool);
+          });
+          L.push('enabled = [' + tools.map(tomlStr).join(', ') + ']');
+          var sxOn = document.querySelector('.tool-toggle[data-tool="sx"]');
+          if (sxOn && sxOn.checked) {
+            var searxng = $('searxng') ? $('searxng').checked : true;
+            L.push('searxng = ' + searxng);
+          }
+        }
+        L.push('');
+
+        // [hardening]
+        var harden = $('harden').checked;
+        L.push('[hardening]');
+        L.push('enabled = ' + harden);
+        if (harden) {
+          var port = parseInt($('ssh-port').value) || 22;
+          if (port !== 22) L.push('ssh_port = ' + port);
+          L.push('firewall = ' + $('harden-firewall').checked);
+          L.push('fail2ban = ' + $('harden-fail2ban').checked);
+          L.push('ssh_hardening = ' + $('harden-ssh').checked);
+          L.push('auto_updates = ' + $('harden-updates').checked);
+          L.push('kernel_security = ' + $('harden-kernel').checked);
+        }
+
+        return L.join('\n') + '\n';
+      }
+
+      function render() {
+        $('output').textContent = generateToml();
+      }
+
+      function updateWorkspaceHint() {
+        var isMulti = $('user-mode').value === 'multi';
+        var input = $('workspace-dir');
+        var hint = $('workspace-hint');
+        if (isMulti) {
+          input.placeholder = '/home/oqto_*/workspace';
+          hint.innerHTML = 'In multi-user mode, each platform user gets their own workspace at ' +
+            '<code>/home/oqto_&lt;username&gt;-&lt;id&gt;/workspace</code>. ' +
+            'This path is per-user and managed automatically. Leave empty for the default.';
+        } else {
+          input.placeholder = '~/oqto/workspace';
+          hint.innerHTML = 'Where your agent project files live. A single directory for all sessions. ' +
+            'Leave empty for the default (<code>~/oqto/workspace</code>).';
+        }
+      }
+
+      function updateVisibility() {
+        $('container-opts').classList.toggle('is-visible', $('backend-mode').value === 'container');
+        $('caddy-opts').classList.toggle('is-visible', $('setup-caddy').checked);
+        $('tools-individual').classList.toggle('is-visible', !$('tools-all').checked);
+        updateWorkspaceHint();
+
+        var sxToggle = document.querySelector('.tool-toggle[data-tool="sx"]');
+        var showSearxng = !$('tools-all').checked && sxToggle && sxToggle.checked;
+        $('searxng-opts').classList.toggle('is-visible', showSearxng);
+
+        $('harden-opts').classList.toggle('is-visible', $('harden').checked);
+
+        document.querySelectorAll('.provider-toggle').forEach(function(t) {
+          var row = t.closest('.provider-row');
+          if (row) row.classList.toggle('is-active', t.checked);
+        });
+      }
+
+      document.querySelectorAll('input, select').forEach(function(el) {
+        el.addEventListener('change', function() { updateVisibility(); render(); });
+        el.addEventListener('input', function() { render(); });
+      });
+
+      $('download-btn').addEventListener('click', function() {
+        var toml = generateToml();
+        var blob = new Blob([toml], { type: 'application/toml' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'oqto.setup.toml';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      $('copy-btn').addEventListener('click', function() {
+        navigator.clipboard.writeText(generateToml()).then(function() {
+          var btn = $('copy-btn');
+          var orig = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(function() { btn.textContent = orig; }, 1500);
+        });
+      });
+
+      updateVisibility();
+      render();
+    })();
+  </script>
+</body>
+</html>
