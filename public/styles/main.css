@@ -325,19 +325,35 @@ a:hover {
 }
 
 .hero__copy {
-  background: none;
-  border: none;
-  color: var(--fg-subtle);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
   cursor: pointer;
-  padding: 0.25rem;
-  display: flex;
+  padding: 0.35rem 0.75rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: lowercase;
 }
 
 .hero__copy:hover {
   color: var(--accent);
+  border-color: var(--accent);
+}
+
+.hero__copy--primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+.hero__copy--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--accent-fg);
 }
 
 .hero__cta {
