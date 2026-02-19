@@ -699,12 +699,14 @@
     <section class="setup__section">
       <h2 class="setup__section-title">LLM Providers</h2>
       <p class="setup__section-desc">
-        Select which LLM providers to configure. oqto uses EAVS as an LLM proxy that sits
+        Select which LLM providers to configure. oqto uses eavs as an LLM proxy that sits
         between agents and provider APIs. This gives you a single endpoint for all providers,
         per-user virtual API keys, usage tracking, and rate limit management.<br><br>
         API keys are not stored in this file. During setup, the installer will check your
         environment for existing keys (e.g. <code>$OPENAI_API_KEY</code>) and prompt for any
-        missing ones. You can add or change providers later by editing the EAVS config.
+        missing ones. You can add or change providers later by editing the eavs config.<br><br>
+        For azure ai foundry, pick the API type (openai chat, openai responses, or anthropic)
+        and set the base url for your foundry resource (e.g. https://<resource>.services.ai.azure.com/openai/v1).
       </p>
       <div class="providers" id="providers">
         <div class="provider-row" data-provider="anthropic">
@@ -1122,7 +1124,31 @@
 
       // Presets for custom provider types
       var CUSTOM_PRESETS = {
-        'azure': { label: 'Azure OpenAI', type: 'azure', base_url: 'https://<resource>.openai.azure.com', env_hint: 'AZURE_OPENAI_API_KEY', needs_deployment: true, needs_api_version: true },
+        'foundry-openai': {
+          label: 'Azure AI Foundry (OpenAI Chat)',
+          type: 'openai',
+          base_url: 'https://<resource>.services.ai.azure.com/openai/v1',
+          env_hint: 'AZURE_FOUNDRY_API_KEY'
+        },
+        'foundry-openai-responses': {
+          label: 'Azure AI Foundry (OpenAI Responses)',
+          type: 'openai-responses',
+          base_url: 'https://<resource>.services.ai.azure.com/openai/v1',
+          env_hint: 'AZURE_FOUNDRY_API_KEY'
+        },
+        'foundry-claude': {
+          label: 'Azure AI Foundry (Anthropic)',
+          type: 'anthropic',
+          base_url: 'https://<resource>.openai.azure.com/anthropic/v1',
+          env_hint: 'AZURE_FOUNDRY_API_KEY'
+        },
+        'foundry-other': {
+          label: 'Azure AI Foundry (Other)',
+          type: 'openai-compatible',
+          base_url: 'https://<resource>.services.ai.azure.com/openai/v1',
+          env_hint: 'AZURE_FOUNDRY_API_KEY'
+        },
+        'azure': { label: 'Azure OpenAI', type: 'azure', base_url: 'https://<resource>.openai.azure.com/', env_hint: 'AZURE_OPENAI_API_KEY', needs_deployment: true, needs_api_version: true },
         'bedrock': { label: 'AWS Bedrock', type: 'bedrock', base_url: 'https://bedrock-runtime.<region>.amazonaws.com', env_hint: 'AWS_ACCESS_KEY_ID', needs_region: true },
         'vertex': { label: 'Google Vertex AI', type: 'google-vertex', base_url: 'https://<location>-aiplatform.googleapis.com', env_hint: 'GOOGLE_APPLICATION_CREDENTIALS', needs_gcp: true },
         'ollama': { label: 'Ollama', type: 'openai-compatible', base_url: 'http://localhost:11434/v1', env_hint: '(none needed)', no_key: true },
@@ -1159,14 +1185,15 @@
         html += '<input class="field__input cp-name" type="text" value="' + nameDefault + '" placeholder="my-provider">';
         html += '</div>';
         html += '<div class="field">';
-        html += '<label class="field__label">Type</label>';
+        html += '<label class="field__label">API type</label>';
         html += '<select class="field__select cp-type">';
+        html += '<option value="openai"' + (preset.type === 'openai' ? ' selected' : '') + '>OpenAI Chat Completions</option>';
+        html += '<option value="openai-responses"' + (preset.type === 'openai-responses' ? ' selected' : '') + '>OpenAI Responses API</option>';
         html += '<option value="openai-compatible"' + (preset.type === 'openai-compatible' ? ' selected' : '') + '>OpenAI-compatible</option>';
+        html += '<option value="anthropic"' + (preset.type === 'anthropic' ? ' selected' : '') + '>Anthropic</option>';
         html += '<option value="azure"' + (preset.type === 'azure' ? ' selected' : '') + '>Azure OpenAI</option>';
         html += '<option value="bedrock"' + (preset.type === 'bedrock' ? ' selected' : '') + '>AWS Bedrock</option>';
         html += '<option value="google-vertex"' + (preset.type === 'google-vertex' ? ' selected' : '') + '>Google Vertex AI</option>';
-        html += '<option value="anthropic">Anthropic (custom endpoint)</option>';
-        html += '<option value="openai">OpenAI (custom endpoint)</option>';
         html += '</select>';
         html += '</div>';
         html += '</div>';

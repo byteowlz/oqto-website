@@ -215,8 +215,8 @@ enabled = ["anthropic", "openai"]
 
 # Optional custom providers (repeat per provider)
 # [providers.<name>]
-# type = "openai-compatible" | "azure" | "bedrock" | "google-vertex" | "openai" | "anthropic"
-# base_url = "http://localhost:8000/v1"
+# type = "openai" | "openai-responses" | "openai-compatible" | "azure" | "bedrock" | "google-vertex" | "anthropic"
+# base_url = "http://localhost:8000/v1"  # for foundry: https://<resource>.services.ai.azure.com/openai/v1
 # api_key = "env:MY_PROVIDER_API_KEY"  # optional for local servers
 # deployment = "gpt-4o"                # azure only
 # api_version = "2024-12-01-preview"   # azure only
