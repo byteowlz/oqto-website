@@ -614,6 +614,7 @@ a:hover {
   background: var(--accent-subtle);
   border-left: 3px solid var(--accent);
   text-align: left;
+  margin-top: 1.25rem;
 }
 
 /* ── Architecture ── */
