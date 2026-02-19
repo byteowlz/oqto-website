@@ -500,6 +500,33 @@ a:hover {
   margin-bottom: 2rem;
 }
 
+/* ── Built with pi ── */
+.built-with {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.built-with__logo {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.built-with__logo-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.built-with__text {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  text-transform: lowercase;
+}
+
 /* ── Architecture ── */
 .architecture {
   display: grid;
