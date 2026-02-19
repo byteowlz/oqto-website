@@ -1,0 +1,14 @@
+You are running on a server with shell access. Please set up oqto.
+
+1. Ensure git is installed.
+2. Clone the repo:
+   git clone https://github.com/byteowlz/oqto.git && cd oqto
+3. If I provide an oqto.setup.toml, place it in the repo root.
+4. Run setup:
+   ./setup.sh --config oqto.setup.toml
+
+If no config file is provided, run the interactive setup:
+   ./setup.sh
+
+Before running, confirm the target hostname and current user.
+Prompt me for any missing secrets (admin password, API keys).

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <script>
+    (function() {
+      var stored = null;
+      try { stored = localStorage.getItem('oqto-theme'); } catch(e) {}
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var isDark = stored === 'dark' || (!stored && prefersDark);
+      if (isDark) document.documentElement.classList.add('dark');
+      document.documentElement.style.background = isDark ? '#222624' : '#f2f5f3';
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="oqto server setup prompt">
+  <title>oqto -- server setup prompt</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/oqto-icon-white.svg">
+  <link rel="stylesheet" href="/styles/main.css">
+  <style>
+    .prompt {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: calc(2rem + 3.5rem) 1.5rem 4rem;
+      font-size: 18px;
+    }
+
+    .prompt__header {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .prompt__title {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 0.5rem;
+    }
+
+    .prompt__subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--fg-muted);
+      line-height: 1.6;
+    }
+
+    .prompt__block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      white-space: pre-wrap;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    .prompt__actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 0.55rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--fg-muted);
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .note {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--fg-muted);
+      line-height: 1.6;
+      padding: 0.85rem 1rem;
+      background: var(--accent-subtle);
+      border-left: 3px solid var(--accent);
+      margin-top: 1.25rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__container">
+      <a href="/" class="nav__logo">
+        <img src="/assets/oqto-text-black.svg" alt="oqto" class="nav__logo-text nav__logo-text--light">
+        <img src="/assets/oqto-text-white.svg" alt="oqto" class="nav__logo-text nav__logo-text--dark">
+      </a>
+      <div class="nav__actions">
+        <a href="/" class="nav__link" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--fg-muted);text-decoration:none;transition:color 120ms ease" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--fg-muted)'">home</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <span class="theme-toggle__sun">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+          <span class="theme-toggle__moon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+        </button>
+        <a href="https://github.com/byteowlz/oqto" class="nav__github" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="prompt">
+    <div class="prompt__header">
+      <h1 class="prompt__title">server setup prompt</h1>
+      <p class="prompt__subtitle">
+        Paste this prompt into an agent that has shell access to your server.
+        It will walk through cloning the repo, generating or using a config,
+        and running setup safely. Everything is readable to a human.
+      </p>
+    </div>
+
+    <div class="prompt__block" id="prompt-text">loading...</div>
+    <div class="prompt__actions">
+      <button class="btn" id="copy-prompt">copy prompt</button>
+      <a class="btn" id="plain-link" href="/prompt.txt">plain text</a>
+    </div>
+
+    <div class="note">
+      This prompt does not include passwords or API keys. The agent should request
+      those interactively or read them from environment variables.
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          document.documentElement.classList.toggle('dark');
+          const isDark = document.documentElement.classList.contains('dark');
+          try { localStorage.setItem('oqto-theme', isDark ? 'dark' : 'light'); } catch(e) {}
+          document.documentElement.style.background = isDark ? '#222624' : '#f2f5f3';
+        });
+      }
+    })();
+
+    (function() {
+      const prompt = `You are running on a server with shell access. Please set up oqto.
+
+1. Ensure git is installed.
+2. Clone the repo:
+   git clone https://github.com/byteowlz/oqto.git && cd oqto
+3. If I provide an oqto.setup.toml, place it in the repo root.
+4. Run setup:
+   ./setup.sh --config oqto.setup.toml
+
+If no config file is provided, run the interactive setup:
+   ./setup.sh
+
+Before running, confirm the target hostname and current user.
+Prompt me for any missing secrets (admin password, API keys).`;
+
+      const promptText = document.getElementById('prompt-text');
+      const copyBtn = document.getElementById('copy-prompt');
+      promptText.textContent = prompt;
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'absolute';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
+      copyBtn.addEventListener('click', function() {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(prompt).then(function() {
+            const orig = copyBtn.textContent;
+            copyBtn.textContent = 'copied';
+            setTimeout(() => copyBtn.textContent = orig, 1500);
+          }).catch(function() {
+            fallbackCopy(prompt);
+          });
+        } else {
+          fallbackCopy(prompt);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
