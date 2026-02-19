@@ -56,8 +56,9 @@
       color: var(--fg);
       line-height: 1.6;
       width: 100%;
-      min-height: 320px;
-      resize: vertical;
+      resize: none;
+      overflow: hidden;
+      height: auto;
     }
 
     .prompt__actions {
@@ -255,6 +256,8 @@ Before proceeding, confirm the final config with me.`;
       const promptText = document.getElementById('prompt-text');
       const copyBtn = document.getElementById('copy-prompt');
       promptText.value = prompt;
+      promptText.style.height = 'auto';
+      promptText.style.height = promptText.scrollHeight + 'px';
 
       copyBtn.addEventListener('click', function() {
         promptText.focus();
