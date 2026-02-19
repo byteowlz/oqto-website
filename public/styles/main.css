@@ -513,6 +513,19 @@ a:hover {
 .built-with__logo {
   height: 36px;
   width: auto;
+  display: none;
+}
+
+.built-with__logo--light {
+  display: block;
+  filter: invert(1) grayscale(1) brightness(0.2);
+}
+
+.dark .built-with__logo--light {
+  display: none;
+}
+
+.dark .built-with__logo--dark {
   display: block;
 }
 
@@ -951,6 +964,10 @@ a:hover {
   position: relative;
 }
 
+.arch__box--wide {
+  min-width: 320px;
+}
+
 .arch__box-title {
   font-size: 0.85rem;
   font-weight: 700;
@@ -962,6 +979,14 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.4rem;
+}
+
+.arch__box-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
 }
 
 .arch__svc {

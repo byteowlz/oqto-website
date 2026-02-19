@@ -100,7 +100,7 @@
               <span class="arch__label">Browser</span>
             </div>
             <div class="arch__edge">ws</div>
-            <div class="arch__box" data-tooltip="oqto backend server">
+            <div class="arch__box arch__box--wide" data-tooltip="oqto control plane">
               <div class="arch__box-title">oqto</div>
               <div class="arch__box-grid">
                 <div class="arch__svc" data-tooltip="chat history service">hstry</div>
@@ -108,14 +108,15 @@
                 <div class="arch__svc" data-tooltip="issue/task tracker">trx</div>
                 <div class="arch__svc" data-tooltip="llm proxy">eavs</div>
               </div>
-            </div>
-            <div class="arch__edge">rpc</div>
-            <div class="arch__node" data-tooltip="per-user runner daemon">
-              <span class="arch__label">runner</span>
-            </div>
-            <div class="arch__edge">sandbox</div>
-            <div class="arch__node" data-tooltip="pi agent runtime">
-              <span class="arch__label">pi</span>
+              <div class="arch__box-row">
+                <div class="arch__node" data-tooltip="per-user runner daemon">
+                  <span class="arch__label">runner</span>
+                </div>
+                <div class="arch__edge">sandbox</div>
+                <div class="arch__node" data-tooltip="pi agent runtime">
+                  <span class="arch__label">pi</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -130,10 +131,9 @@
           <a href="https://github.com/byteowlz/eavs" class="tool tool--link" target="_blank" rel="noopener">eavs</a>
           <a href="https://github.com/byteowlz/agntz" class="tool tool--link" target="_blank" rel="noopener">agntz</a>
           <a href="https://github.com/byteowlz/sx" class="tool tool--link" target="_blank" rel="noopener">sx</a>
-          <a href="https://github.com/byteowlz/mailz" class="tool tool--link" target="_blank" rel="noopener">mailz</a>
           <a href="https://github.com/byteowlz/skdlr" class="tool tool--link" target="_blank" rel="noopener">skdlr</a>
           <a href="https://github.com/byteowlz/scrpr" class="tool tool--link" target="_blank" rel="noopener">scrpr</a>
-          <a href="https://github.com/mariozechner/pi-coding-agent" class="tool tool--link" target="_blank" rel="noopener">pi</a>
+          <a href="https://buildwithpi.ai/" class="tool tool--link" target="_blank" rel="noopener">pi</a>
         </div>
       </div>
     </div>
@@ -178,7 +178,8 @@
     <div class="section__container">
       <div class="built-with">
         <a href="https://buildwithpi.ai/" target="_blank" rel="noopener" class="built-with__logo-link">
-          <img src="https://buildwithpi.ai/logo.svg" alt="pi" class="built-with__logo">
+          <img src="https://buildwithpi.ai/logo.svg" alt="pi" class="built-with__logo built-with__logo--light">
+          <img src="https://buildwithpi.ai/logo.svg" alt="pi" class="built-with__logo built-with__logo--dark">
         </a>
         <div class="built-with__text">built with pi</div>
       </div>
