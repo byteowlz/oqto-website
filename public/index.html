@@ -72,13 +72,14 @@
           server with multi-user Linux isolation. Web UI for chat, files, terminal,
           and memory. Bring any LLM provider including local ones.
         </p>
-        <div class="hero__install">
-          <code class="hero__command">git clone https://github.com/byteowlz/oqto.git && cd oqto && ./setup.sh</code>
-          <button class="hero__copy hero__copy--primary" aria-label="Copy install command">copy</button>
-        </div>
-        <div style="margin-top:0.3rem">
-          <a href="/setup.html" class="hero__cta" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.85rem;padding:0.45rem 0.9rem;border:1px solid var(--border);background:var(--bg-card);color:var(--fg-muted);text-decoration:none;transition:all 120ms ease">
-            or use the comfortable configurator
+        <div class="hero__install-row">
+          <div class="hero__install">
+            <code class="hero__command">git clone https://github.com/byteowlz/oqto.git && cd oqto && ./setup.sh</code>
+            <button class="hero__copy hero__copy--primary" aria-label="Copy install command">copy</button>
+          </div>
+          <div class="hero__or">or</div>
+          <a href="/setup.html" class="hero__cta hero__cta--primary">
+            comfortable configurator
           </a>
         </div>
         <div class="note" style="margin-top:0.6rem">
@@ -144,11 +145,11 @@
         </div>
         <div class="feature-card">
           <h3>Terminal + Files</h3>
-          <p>Full terminal emulation and syntax-highlighted file browser in the web ui. Agents can run commands and edit files safely.</p>
+          <p>Full terminal emulation via webghostty and a syntax-highlighted file browser. Agents can run commands and edit files safely.</p>
         </div>
         <div class="feature-card">
           <h3>Memory</h3>
-          <p>Semantic search across conversations and artifacts via <a href="https://github.com/byteowlz/mmry">mmry</a>. Persist insights across sessions.</p>
+          <p>Semantic search across artifacts and notes via <a href="https://github.com/byteowlz/mmry">mmry</a>. Chat history search is coming soon.</p>
         </div>
         <div class="feature-card">
           <h3>Multi-User</h3>
