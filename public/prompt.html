@@ -227,11 +227,35 @@ enabled = ["anthropic", "openai"]
 
 [tools]
 # install_all = true installs all tools
-# enabled = ["agntz", "mmry", "hstry", "trx", "sx", "scrpr", "tmpltr", "sldr", "ignr"]
-# note: mmry, hstry, trx are required
+# enabled = ["agntz", "mmry", "hstry", "trx", "sx", "scrpr", "tmpltr", "sldr", "ignr", "ears", "kokoro"]
+# note: mmry, hstry, trx are required; ears and kokoro are for voice mode (optional)
 install_all = true
-# enabled = ["agntz", "mmry", "hstry", "trx", "sx", "scrpr"]
+# enabled = ["agntz", "mmry", "hstry", "trx", "sx", "scrpr", "ears", "kokoro"]
 # searxng = true  # only used if sx is enabled
+
+Tool descriptions:
+- agntz (Agent Operations CLI): Unified CLI wrapper providing convenient commands for mmry, hstry, trx, and other tools. Offers memory management, history search, transaction tracking, issue management, and file reservations through a single interface.
+  https://github.com/byteowlz/agntz
+- mmry (Memory Store): Persistent memory system for storing and retrieving reusable knowledge, insights, and patterns
+  https://github.com/byteowlz/mmry
+- hstry (History Store): Persistent history tracking for sessions and commands with search capabilities
+  https://github.com/byteowlz/hstry
+- trx (Transaction Store): Transaction management for tracking operations, rollbacks, and state changes
+  https://github.com/byteowlz/trx
+- sx (Search CLI): Web search integration using SearXNG for privacy-focused search capabilities
+  https://github.com/byteowlz/sx
+- scrpr (Scraper CLI): Web scraping tools for extracting data from websites and web services
+  https://github.com/byteowlz/scrpr
+- tmpltr (Templater CLI): Template generation and management for creating consistent file structures and boilerplate
+  https://github.com/byteowlz/tmpltr
+- sldr (Slider CLI): Interactive TUI slider components and parameter adjustment tools
+  https://github.com/byteowlz/sldr
+- ignr (Ignore File Generator): Smart .gitignore and ignore file generation based on project type
+  https://github.com/byteowlz/ignr
+- ears (Speech-to-Text): Streaming STT built on Kyutai's models with server management, client capture, and system-wide dictation support
+  https://github.com/byteowlz/eaRS
+- kokoro (Text-to-Speech): Fast Kokoro TTS implementation with multi-language support, voice style mixing, OpenAI-compatible API server, and streaming mode
+  https://github.com/byteowlz/kokorox
 
 [hardening]
 # linux server hardening (recommended on public servers)
