@@ -135,9 +135,9 @@
     <div class="prompt__header">
       <h1 class="prompt__title">server setup prompt</h1>
       <p class="prompt__subtitle">
-        Paste this prompt into an agent that has shell access to your server.
-        It will walk through cloning the repo, generating or using a config,
-        and running setup safely. Everything is readable to a human.
+        Read this prompt carefully, then copy and paste it into the agent tool that has shell access to your server.
+        It will walk through cloning the repo, generating or using a config, and running setup safely.
+        Everything is readable to a human.
       </p>
       <div class="note" style="margin-top:0.75rem">
         Setup script testing is focused on ubuntu 24.04, but oqto can run on any linux distro in principle.
@@ -172,9 +172,7 @@
     })();
 
     (function() {
-      const prompt = `Read this prompt carefully, then copy and paste it into the agent tool that has shell access to your server.
-
-You are running on a server with shell access. Please set up oqto.
+      const prompt = `You are running on a server with shell access. Please set up oqto.
 
 Step 1: confirm context
 - print hostname and current user
@@ -192,12 +190,10 @@ Template (full structure):
 
 [deployment]
 # user_mode: "single" or "multi"
-# backend_mode: "local" or "container" (container is experimental)
-# container_runtime: "docker" | "podman" | "auto"
+# backend_mode: "local" only (container mode needs further testing)
 # workspace_dir: custom workspace path (optional)
 user_mode = "multi"
 backend_mode = "local"
-# container_runtime = "auto"
 # workspace_dir = "/home/{linux_username}/oqto"
 
 [network]
