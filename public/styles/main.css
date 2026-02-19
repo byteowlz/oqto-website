@@ -780,6 +780,34 @@ a:hover {
   font-family: var(--font-mono);
   color: var(--fg-muted);
   transition: all var(--transition-fast);
+  position: relative;
+}
+
+.tool[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f1412;
+  color: #f2f5f3;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid rgba(242, 245, 243, 0.2);
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.tool[data-tooltip]:hover::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #0f1412 transparent transparent transparent;
+  z-index: 5;
 }
 
 .section--alt .tool {
