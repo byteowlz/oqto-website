@@ -94,32 +94,29 @@
       <h2 class="section__title">architecture</h2>
 
       <div class="arch">
-        <!-- Main pipeline -->
-        <div class="arch__pipeline">
-          <div class="arch__node" title="web ui in the browser">
-            <span class="arch__label">Browser</span>
-          </div>
-          <div class="arch__edge"><span title="websocket">ws</span></div>
-          <div class="arch__node arch__node--primary" title="oqto backend server">
-            <span class="arch__label">oqto</span>
-          </div>
-          <div class="arch__edge"><span title="runner rpc">rpc</span></div>
-          <div class="arch__node" title="per-user runner daemon">
-            <span class="arch__label">runner</span>
-          </div>
-          <div class="arch__edge"><span title="sandbox wrapper">sandbox</span></div>
-          <div class="arch__node" title="pi agent runtime">
-            <span class="arch__label">pi</span>
-          </div>
-        </div>
-        <!-- Services branch -->
-        <div class="arch__branch">
-          <div class="arch__branch-line"></div>
-          <div class="arch__services">
-            <span class="arch__svc" title="chat history service">hstry</span>
-            <span class="arch__svc" title="semantic memory">mmry</span>
-            <span class="arch__svc" title="issue/task tracker">trx</span>
-            <span class="arch__svc" title="llm proxy">eavs</span>
+        <div class="arch__block">
+          <div class="arch__row">
+            <div class="arch__node" data-tooltip="web ui in the browser">
+              <span class="arch__label">Browser</span>
+            </div>
+            <div class="arch__edge">ws</div>
+            <div class="arch__box" data-tooltip="oqto backend server">
+              <div class="arch__box-title">oqto</div>
+              <div class="arch__box-grid">
+                <div class="arch__svc" data-tooltip="chat history service">hstry</div>
+                <div class="arch__svc" data-tooltip="semantic memory">mmry</div>
+                <div class="arch__svc" data-tooltip="issue/task tracker">trx</div>
+                <div class="arch__svc" data-tooltip="llm proxy">eavs</div>
+              </div>
+            </div>
+            <div class="arch__edge">rpc</div>
+            <div class="arch__node" data-tooltip="per-user runner daemon">
+              <span class="arch__label">runner</span>
+            </div>
+            <div class="arch__edge">sandbox</div>
+            <div class="arch__node" data-tooltip="pi agent runtime">
+              <span class="arch__label">pi</span>
+            </div>
           </div>
         </div>
       </div>

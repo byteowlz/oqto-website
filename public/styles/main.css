@@ -894,36 +894,36 @@ a:hover {
 /* ── Architecture Diagram ── */
 .arch {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  max-width: 700px;
-  margin: 0 auto;
+  justify-content: center;
+  margin: 1.5rem auto 0;
 }
 
-/* Horizontal pipeline */
-.arch__pipeline {
+.arch__block {
+  width: 100%;
+  max-width: 960px;
+}
+
+.arch__row {
   display: flex;
   align-items: center;
-  width: 100%;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .arch__node {
-  flex: 1;
   background: var(--bg-muted);
   border: 1px solid var(--border);
-  padding: 0.75rem 0.5rem;
+  padding: 0.75rem 0.8rem;
   text-align: center;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  min-width: 96px;
+  position: relative;
 }
 
 .arch__node:hover {
   border-color: var(--accent);
-}
-
-.arch__node--primary {
-  border-color: var(--accent);
-  position: relative;
+  background: var(--bg-card-hover);
 }
 
 .arch__label {
@@ -936,102 +936,83 @@ a:hover {
   display: flex;
   align-items: center;
   padding: 0 0.25rem;
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+  text-transform: lowercase;
+}
+
+.arch__box {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  padding: 0.75rem 0.9rem;
+  min-width: 180px;
+  text-align: center;
   position: relative;
 }
 
-.arch__edge::before {
-  content: "";
-  display: block;
-  width: 2rem;
-  height: 1px;
-  background: var(--border-strong);
+.arch__box-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
 }
 
-.arch__edge::after {
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  border-left: 6px solid var(--border-strong);
-  flex-shrink: 0;
-}
-
-.arch__edge span {
-  position: absolute;
-  top: -1.125rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.5625rem;
-  color: var(--fg-subtle);
-  white-space: nowrap;
-  letter-spacing: 0.04em;
-}
-
-/* Services branch hanging below oqto */
-.arch__branch {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.arch__branch-line {
-  width: 1px;
-  height: 0.75rem;
-  background: var(--border-strong);
-}
-
-.arch__services {
-  display: flex;
-  gap: 0.375rem;
+.arch__box-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
 }
 
 .arch__svc {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
-  color: var(--fg-subtle);
+  color: var(--fg);
+  font-weight: 600;
   background: var(--bg-muted);
   border: 1px solid var(--border);
-  padding: 0.25rem 0.5rem;
-  transition: border-color var(--transition-fast), color var(--transition-fast);
+  padding: 0.25rem 0.4rem;
 }
 
-.arch__svc:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+/* Tooltip */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-dark);
+  color: var(--fg-inverse);
+  font-size: 0.7rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  z-index: 5;
+}
+
+[data-tooltip]:hover::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--bg-dark) transparent transparent transparent;
+  z-index: 5;
 }
 
 /* Mobile: stack vertically */
 @media (max-width: 560px) {
-  .arch__pipeline {
+  .arch__row {
     flex-direction: column;
-  }
-
-  .arch__node {
-    width: 100%;
   }
 
   .arch__edge {
-    padding: 0.125rem 0;
-    flex-direction: column;
-  }
-
-  .arch__edge::before {
-    width: 1px;
-    height: 1.25rem;
-  }
-
-  .arch__edge::after {
-    border-top: 6px solid var(--border-strong);
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: none;
-  }
-
-  .arch__edge span {
-    position: static;
-    transform: none;
     padding: 0.125rem 0;
   }
 }
