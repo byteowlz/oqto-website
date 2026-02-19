@@ -55,6 +55,9 @@
       font-size: 0.85rem;
       color: var(--fg);
       line-height: 1.6;
+      width: 100%;
+      min-height: 320px;
+      resize: vertical;
     }
 
     .prompt__actions {
@@ -137,9 +140,9 @@
       </p>
     </div>
 
-    <div class="prompt__block" id="prompt-text">loading...</div>
+    <textarea class="prompt__block" id="prompt-text" readonly spellcheck="false">loading...</textarea>
     <div class="prompt__actions">
-      <button class="btn" id="copy-prompt">copy prompt</button>
+      <button class="btn" id="copy-prompt">select + copy</button>
       <a class="btn" id="plain-link" href="/prompt.txt">plain text</a>
     </div>
 
@@ -180,32 +183,15 @@ Prompt me for any missing secrets (admin password, API keys).`;
 
       const promptText = document.getElementById('prompt-text');
       const copyBtn = document.getElementById('copy-prompt');
-      promptText.textContent = prompt;
-
-      function fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'absolute';
-        ta.style.left = '-9999px';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); } catch (e) {}
-        document.body.removeChild(ta);
-      }
+      promptText.value = prompt;
 
       copyBtn.addEventListener('click', function() {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(prompt).then(function() {
-            const orig = copyBtn.textContent;
-            copyBtn.textContent = 'copied';
-            setTimeout(() => copyBtn.textContent = orig, 1500);
-          }).catch(function() {
-            fallbackCopy(prompt);
-          });
-        } else {
-          fallbackCopy(prompt);
-        }
+        promptText.focus();
+        promptText.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = 'copied';
+        setTimeout(() => copyBtn.textContent = orig, 1500);
       });
     })();
   </script>
