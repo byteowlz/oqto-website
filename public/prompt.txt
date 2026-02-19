@@ -1,14 +1,85 @@
 You are running on a server with shell access. Please set up oqto.
 
-1. Ensure git is installed.
-2. Clone the repo:
-   git clone https://github.com/byteowlz/oqto.git && cd oqto
-3. If I provide an oqto.setup.toml, place it in the repo root.
-4. Run setup:
-   ./setup.sh --config oqto.setup.toml
+Step 1: confirm context
+- print hostname and current user
+- verify you are in the correct environment
+
+Step 2: clone and enter the repo
+- git clone https://github.com/byteowlz/oqto.git
+- cd oqto
+
+Step 3: create a config file (oqto.setup.toml)
+If I already provided a config file, skip this step.
+Otherwise, create it from the template below and ask me to confirm or edit values.
+
+Template (full structure):
+
+[deployment]
+# user_mode: "single" or "multi"
+# backend_mode: "local" or "container" (container is experimental)
+# container_runtime: "docker" | "podman" | "auto"
+# workspace_dir: custom workspace path (optional)
+user_mode = "multi"
+backend_mode = "local"
+# container_runtime = "auto"
+# workspace_dir = "/home/{linux_username}/oqto"
+
+[network]
+# caddy: enable https reverse proxy
+# domain: public domain for https
+# log_level: error | warn | info | debug | trace
+caddy = false
+# domain = "oqto.example.com"
+log_level = "info"
+
+[admin]
+# password is NOT stored here; prompt me securely during setup
+username = "admin"
+email = "admin@example.com"
+
+[providers]
+# enabled providers (choose any)
+# anthropic, openai, google, openrouter, groq, mistral, xai, plus custom
+enabled = ["anthropic", "openai"]
+
+# Optional custom providers (repeat per provider)
+# [providers.<name>]
+# type = "openai-compatible" | "azure" | "bedrock" | "google-vertex" | "openai" | "anthropic"
+# base_url = "http://localhost:8000/v1"
+# api_key = "env:MY_PROVIDER_API_KEY"  # optional for local servers
+# deployment = "gpt-4o"                # azure only
+# api_version = "2024-12-01-preview"   # azure only
+# aws_region = "us-east-1"             # bedrock only
+# gcp_project = "my-project"           # vertex only
+# gcp_location = "us-central1"         # vertex only
+# test_model = "model-name"            # optional
+
+[tools]
+# install_all = true installs all tools
+# enabled = ["agntz", "mmry", "hstry", "trx", "sx", "scrpr", "tmpltr", "sldr", "ignr"]
+# note: mmry, hstry, trx are required
+install_all = true
+# enabled = ["agntz", "mmry", "hstry", "trx", "sx", "scrpr"]
+# searxng = true  # only used if sx is enabled
+
+[hardening]
+# linux server hardening (recommended on public servers)
+enabled = true
+# ssh_port = 22
+firewall = true
+fail2ban = true
+ssh_hardening = true
+auto_updates = true
+kernel_security = true
+
+Step 4: run setup
+./setup.sh --config oqto.setup.toml
 
 If no config file is provided, run the interactive setup:
-   ./setup.sh
+./setup.sh
 
-Before running, confirm the target hostname and current user.
-Prompt me for any missing secrets (admin password, API keys).
+Step 5: prompt me for secrets
+- admin password
+- any missing LLM API keys
+
+Before proceeding, confirm the final config with me.
