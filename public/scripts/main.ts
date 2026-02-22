@@ -90,6 +90,24 @@ function init(): void {
     themeToggle.addEventListener("click", toggleTheme);
   }
 
+  // Install tabs
+  const installTabs = document.querySelectorAll(".install-tab");
+  const installPanels = document.querySelectorAll(".install-panel");
+
+  for (const tab of installTabs) {
+    tab.addEventListener("click", () => {
+      const target = (tab as HTMLElement).dataset.tab;
+      if (!target) return;
+
+      for (const t of installTabs) t.classList.remove("install-tab--active");
+      for (const p of installPanels) p.classList.remove("install-panel--active");
+
+      tab.classList.add("install-tab--active");
+      const panel = document.querySelector(`[data-panel="${target}"]`);
+      if (panel) panel.classList.add("install-panel--active");
+    });
+  }
+
   // Copy install command
   const copyButton = document.querySelector(".hero__copy");
   const commandElement = document.querySelector(".hero__command");

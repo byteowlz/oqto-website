@@ -72,12 +72,29 @@
           server with multi-user Linux isolation. Web UI for chat, files, terminal,
           and memory. Bring any LLM provider including local ones.
         </p>
-        <div class="hero__label">
-          Interactive setup in the terminal:
-        </div>
-        <div class="hero__install">
-          <code class="hero__command">git clone https://github.com/byteowlz/oqto.git && cd oqto && ./setup.sh</code>
-          <button class="hero__copy hero__copy--primary" aria-label="Copy install command">copy</button>
+        <div class="hero__install-tabs">
+          <div class="install-tabs">
+            <button class="install-tab install-tab--active" data-tab="linux">Linux</button>
+            <button class="install-tab" data-tab="macos">macOS</button>
+            <button class="install-tab" data-tab="windows">Windows</button>
+          </div>
+          <div class="install-panel install-panel--active" data-panel="linux">
+            <div class="install-panel__code">
+              <code class="hero__command">git clone https://github.com/byteowlz/oqto.git && cd oqto && ./setup.sh</code>
+              <button class="hero__copy hero__copy--primary" aria-label="Copy install command">copy</button>
+            </div>
+          </div>
+          <div class="install-panel" data-panel="macos">
+            <div class="install-panel__note">
+              <p>still cooking</p>
+            </div>
+          </div>
+          <div class="install-panel" data-panel="windows">
+            <div class="install-panel__note">
+              <p>Sir, it's 2026, the year of the Linux Desktop. Let's stop using shitty software.</p>
+              <p>Go check out <a href="https://omarchy.org/" target="_blank" rel="noopener">omarchy</a> or similar awesome flavors of Linux.</p>
+            </div>
+          </div>
         </div>
         <div class="hero__or">or</div>
         <div class="hero__actions">
