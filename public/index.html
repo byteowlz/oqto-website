@@ -112,8 +112,10 @@
   <!-- Screenshot -->
   <section class="screenshot">
     <div class="screenshot__container">
-      <img src="/assets/oqto_screenshot_light.webp" alt="oqto interface" class="screenshot__img screenshot__img--light">
-      <img src="/assets/oqto_screenshot_dark.webp" alt="oqto interface" class="screenshot__img screenshot__img--dark">
+      <picture>
+        <source srcset="/assets/oqto_screenshot_dark.webp" media="(prefers-color-scheme: dark)">
+        <img src="/assets/oqto_screenshot_light.webp" alt="oqto interface" class="screenshot__img" id="screenshot-img">
+      </picture>
     </div>
   </section>
 

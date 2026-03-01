@@ -31,6 +31,15 @@ function isDarkMode(): boolean {
   return document.documentElement.classList.contains("dark");
 }
 
+function updateScreenshot(theme: Theme): void {
+  const img = document.getElementById("screenshot-img") as HTMLImageElement | null;
+  if (img) {
+    img.src = theme === "dark"
+      ? "/assets/oqto_screenshot_dark.webp"
+      : "/assets/oqto_screenshot_light.webp";
+  }
+}
+
 function applyTheme(theme: Theme): void {
   const root = document.documentElement;
   if (theme === "dark") {
@@ -42,6 +51,7 @@ function applyTheme(theme: Theme): void {
     root.style.background = "#f2f5f3";
     root.style.colorScheme = "light";
   }
+  updateScreenshot(theme);
 }
 
 function setTheme(theme: Theme): void {
