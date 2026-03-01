@@ -622,6 +622,43 @@ a:hover {
   }
 }
 
+/* ── Screenshot ── */
+.screenshot {
+  padding: 2rem 1.5rem 0;
+}
+
+.screenshot__container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.screenshot__img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.screenshot__img--light {
+  display: block;
+}
+
+.screenshot__img--dark {
+  display: none;
+}
+
+.dark .screenshot__img--light {
+  display: none;
+}
+
+.dark .screenshot__img--dark {
+  display: block;
+}
+
+.dark .screenshot__img {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
 /* ── Sections ── */
 .section {
   padding: 3.5rem 1.5rem;
