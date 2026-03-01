@@ -333,14 +333,10 @@ a:hover {
   text-align: left;
 }
 
-.dark .hero__install {
-  background: var(--bg-dark);
-}
-
 .hero__command {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  color: var(--accent);
+  color: var(--fg);
   background: none;
   border: none;
   white-space: nowrap;
@@ -415,15 +411,15 @@ a:hover {
 .hero__install-tabs {
   width: 100%;
   max-width: 740px;
-  border: 1px solid #2d312f;
-  background: #0f1412;
+  border: 1px solid var(--border);
+  background: var(--bg-code);
 }
 
 .install-tabs {
   display: flex;
   gap: 0;
-  background: #1a1f1d;
-  border-bottom: 1px solid #2d312f;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border);
 }
 
 .install-tab {
@@ -432,8 +428,8 @@ a:hover {
   padding: 0.5rem 1rem;
   background: none;
   border: none;
-  border-right: 1px solid #2d312f;
-  color: #5a6360;
+  border-right: 1px solid var(--border);
+  color: var(--fg-subtle);
   cursor: pointer;
   transition: all var(--transition-fast);
   text-transform: lowercase;
@@ -444,14 +440,14 @@ a:hover {
 }
 
 .install-tab:hover {
-  color: #b2b9b5;
+  color: var(--fg);
   background: rgba(59, 167, 124, 0.08);
 }
 
 .install-tab--active {
-  color: #3ba77c;
-  background: #0f1412;
-  box-shadow: inset 0 -2px 0 #3ba77c;
+  color: var(--accent);
+  background: var(--bg-code);
+  box-shadow: inset 0 -2px 0 var(--accent);
 }
 
 .install-panel {
@@ -488,7 +484,7 @@ a:hover {
 .install-panel__note p {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  color: #8a938e;
+  color: var(--fg-muted);
   line-height: 1.7;
   margin: 0;
 }
@@ -498,12 +494,12 @@ a:hover {
 }
 
 .install-panel__note a {
-  color: #3ba77c;
+  color: var(--accent);
   text-decoration: underline;
 }
 
 .install-panel__note a:hover {
-  color: #4dbf90;
+  color: var(--accent-hover);
 }
 
 /* ── Buttons ── */

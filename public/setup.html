@@ -414,7 +414,7 @@
       font-family: var(--font-mono);
       font-size: 0.7rem;
       line-height: 1.7;
-      color: var(--accent);
+      color: var(--fg);
       white-space: pre-wrap;
       word-break: break-all;
       overflow-x: auto;
@@ -1047,11 +1047,23 @@
       </p>
 
       <div class="deploy-tabs">
-        <button class="deploy-tab is-active" data-tab="env">env vars (transparent)</button>
+        <button class="deploy-tab is-active" data-tab="url">--from-url (shortest)</button>
+        <button class="deploy-tab" data-tab="env">env vars (transparent)</button>
         <button class="deploy-tab" data-tab="toml">toml (full config)</button>
       </div>
 
-      <div class="deploy-panel is-active" id="deploy-panel-env">
+      <div class="deploy-panel is-active" id="deploy-panel-url">
+        <div class="deploy-cmd">
+          <pre class="deploy-cmd__pre" id="deploy-cmd-url"></pre>
+          <button class="deploy-cmd__copy" id="deploy-cmd-url-copy">copy</button>
+        </div>
+        <p class="field__hint" style="margin-top:0.5rem">
+          The URL fragment contains your config as base64. <code>setup.sh</code> decodes it
+          locally -- nothing is sent to any server.
+        </p>
+      </div>
+
+      <div class="deploy-panel" id="deploy-panel-env">
         <div class="deploy-cmd">
           <pre class="deploy-cmd__pre" id="deploy-cmd-env"></pre>
           <button class="deploy-cmd__copy" id="deploy-cmd-env-copy">copy</button>
@@ -1084,6 +1096,7 @@
           is never sent to any server.
         </p>
       </div>
+
     </section>
 
     <!-- ── TOML preview ── -->
@@ -1536,6 +1549,18 @@
           "./setup.sh --config oqto.setup.toml";
       }
 
+      function generateDeployCmdUrl(pretty) {
+        var toml = generateToml();
+        var url = generateShareLink(toml);
+        if (pretty) {
+          return "git clone https://github.com/byteowlz/oqto.git && cd oqto && \\\n" +
+            "  ./setup.sh --from-url \\\n" +
+            "  '" + url + "'";
+        }
+        return "git clone https://github.com/byteowlz/oqto.git && cd oqto && " +
+          "./setup.sh --from-url '" + url + "'";
+      }
+
       function generateShareLink(toml) {
         var b64 = encodeConfig(toml);
         return window.location.origin + window.location.pathname + '#' + b64;
@@ -1545,18 +1570,23 @@
         var toml = generateToml();
         var customProviders = getCustomProviders();
         $('output').textContent = toml;
+        $('deploy-cmd-url').textContent = generateDeployCmdUrl(true);
         $('deploy-cmd-env').textContent = generateDeployCmdEnv(true);
         $('deploy-cmd-toml').textContent = generateDeployCmdToml(true);
         $('share-link').value = generateShareLink(toml);
 
-        // If custom providers exist, force the TOML tab
+        // If custom providers exist and env tab is active, switch away
+        // (env vars mode cannot represent custom providers)
         if (customProviders.length > 0) {
-          document.querySelectorAll('.deploy-tab').forEach(function(t) {
-            t.classList.toggle('is-active', t.dataset.tab === 'toml');
-          });
-          document.querySelectorAll('.deploy-panel').forEach(function(p) {
-            p.classList.toggle('is-active', p.id === 'deploy-panel-toml');
-          });
+          var activeTab = document.querySelector('.deploy-tab.is-active');
+          if (activeTab && activeTab.dataset.tab === 'env') {
+            document.querySelectorAll('.deploy-tab').forEach(function(t) {
+              t.classList.toggle('is-active', t.dataset.tab === 'url');
+            });
+            document.querySelectorAll('.deploy-panel').forEach(function(p) {
+              p.classList.toggle('is-active', p.id === 'deploy-panel-url');
+            });
+          }
         }
 
         scheduleFragmentUpdate();
@@ -1661,6 +1691,10 @@
 
       $('copy-toml-btn').addEventListener('click', function() {
         copyWithFeedback(this, generateToml());
+      });
+
+      $('deploy-cmd-url-copy').addEventListener('click', function() {
+        copyWithFeedback(this, generateDeployCmdUrl(false));
       });
 
       $('deploy-cmd-env-copy').addEventListener('click', function() {
