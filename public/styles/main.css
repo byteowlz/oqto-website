@@ -624,24 +624,46 @@ a:hover {
 
 /* ── Screenshot ── */
 .screenshot {
-  padding: 0.75rem 1.5rem 2rem;
+  padding: 0 1.5rem 2rem;
 }
 
 .screenshot__container {
-  max-width: 640px;
+  max-width: 785px;
   margin: 0 auto;
 }
 
 .screenshot__img {
   width: 100%;
   display: block;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  background: transparent;
+  cursor: pointer;
+  transition: transform 120ms ease;
 }
 
-.dark .screenshot__img {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+.screenshot__img:hover {
+  transform: scale(1.01);
+}
+
+/* Lightbox overlay */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 2rem;
+}
+
+.lightbox--open {
+  display: flex;
+}
+
+.lightbox__img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
 }
 
 /* ── Sections ── */

@@ -90,6 +90,32 @@ async function copyToClipboard(text: string): Promise<void> {
 }
 
 /**
+ * Lightbox
+ */
+function initLightbox(): void {
+  const screenshot = document.getElementById("screenshot-img") as HTMLImageElement | null;
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
+
+  if (!screenshot || !lightbox || !lightboxImg) return;
+
+  screenshot.addEventListener("click", () => {
+    lightboxImg.src = screenshot.src;
+    lightbox.classList.add("lightbox--open");
+  });
+
+  lightbox.addEventListener("click", () => {
+    lightbox.classList.remove("lightbox--open");
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      lightbox.classList.remove("lightbox--open");
+    }
+  });
+}
+
+/**
  * Initialize
  */
 function init(): void {
@@ -141,6 +167,9 @@ function init(): void {
       }, 2000);
     });
   }
+
+  // Lightbox
+  initLightbox();
 
   // Listen for system theme changes (only if user hasn't explicitly chosen)
   window
