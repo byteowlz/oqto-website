@@ -632,16 +632,12 @@ a:hover {
   margin: 0 auto;
 }
 
-.screenshot__container picture {
-  display: block;
-  line-height: 0;
-}
-
 .screenshot__img {
   width: 100%;
   display: block;
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  background: transparent;
 }
 
 .dark .screenshot__img {

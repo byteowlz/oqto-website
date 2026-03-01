@@ -33,10 +33,12 @@ function isDarkMode(): boolean {
 
 function updateScreenshot(theme: Theme): void {
   const img = document.getElementById("screenshot-img") as HTMLImageElement | null;
-  if (img) {
-    img.src = theme === "dark"
-      ? "/assets/oqto_screenshot_dark.webp"
-      : "/assets/oqto_screenshot_light.webp";
+  if (!img) return;
+  const src = theme === "dark"
+    ? "/assets/oqto_screenshot_dark.webp"
+    : "/assets/oqto_screenshot_light.webp";
+  if (img.src !== src) {
+    img.src = src;
   }
 }
 
